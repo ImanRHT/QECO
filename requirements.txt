@@ -1,0 +1,24 @@
+# Minimum required Python version
+python_version >= 3.6
+
+# Core libraries
+numpy >= 1.17.0
+matplotlib >= 3.0.0
+tensorflow >= 2.0.0
+torch >= 1.0.0
+
+# Additional libraries
+# random
+# os
+# shutil
+# math
+# queue
+# deque
+# tensorflow.compat.v1
+# tensorflow.python.framework.ops
+# tf.disable_v2_behavior()
+# tensorflow.keras.layers
+# tensorflow.keras.optimizers
+# torch.nn
+# torch.optim
+
