@@ -1,4 +1,11 @@
-# QOCO: QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing
+# QOCO: A QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing
+
+[![GitHub release (latest)](https://img.shields.io/github/v/release/ErfanRht/MovieLab)](https://github.com/ErfanRht/MovieLab/releases)
+![GitHub repo size](https://img.shields.io/github/repo-size/ErfanRht/MovieLab)
+[![GitHub stars](https://img.shields.io/github/stars/ErfanRht/MovieLab?style=social)](https://github.com/ErfanRht/MovieLab/stargazers) 
+[![GitHub forks](https://img.shields.io/github/forks/ErfanRht/MovieLab?style=social)](https://github.com/ErfanRht/MovieLab/network/members) 
+[![GitHub issues](https://img.shields.io/github/issues/ErfanRht/MovieLab?style=social)](https://github.com/ErfanRht/MovieLab/issues) 
+[![GitHub license](https://img.shields.io/github/license/ErfanRht/MovieLab?style=social)](https://github.com/ErfanRht/MovieLab/blob/master/LICENSE) 
 
 This repository contains the Python code for reproducing the decentralized QOCO (QoE-Oriented Computation Offloading) algorithm, designed for Mobile Edge Computing systems. QOCO leverages Deep Reinforcement Learning to empower mobile devices to make their offloading decisions and select offloading targets, with the aim of maximizing the long-term Quality of Experience (QoE) for each user individually.
 
@@ -32,4 +39,7 @@ Make sure you have the following packages installed:
 - numpy
 - matplotlib
 
+
+## Contribute
+If you have an issue or found a bug, please raise a GitHub issue [here](https://github.com/ImanRht/QOCO/issues). Pull requests are also welcome.
 
