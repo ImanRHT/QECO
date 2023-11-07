@@ -1,4 +1,6 @@
-# QOCO: A QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing
+# QOCO
+
+## A QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing
 
 [![GitHub release (latest)](https://img.shields.io/github/v/release/ImanRht/QOCO)](https://github.com/ImanRht/QOCO/releases)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ImanRht/QOCO)
