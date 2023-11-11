@@ -37,7 +37,7 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QOCO: A QoE-Oriented Computation
 
 ## About Authors
 
-- [Iman Rahmati](): Research Assistant in the Computer Science and Engineering Department at SUT.
+- [Iman Rahmati](https://scholar.google.com/citations?user=yHWKp6MAAAAJ&hl=en&oi=sra): Research Assistant in the Computer Science and Engineering Department at SUT.
 - [Hamed Shah-Mansouri](https://scholar.google.com/citations?user=dcjIFccAAAAJ&hl=en&oi=ao): Assistant Professor in the Electrical Engineering Department at SUT.
 - [Ali Movaghar](https://scholar.google.com/citations?user=BXNelwwAAAAJ&hl=en): Professor in the Computer Science and Engineering Department at SUT.
 
