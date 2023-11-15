@@ -3,7 +3,7 @@
 ## A QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing
 
 [![GitHub release (latest)](https://img.shields.io/github/v/release/ImanRht/QOCO)](https://github.com/ImanRht/QOCO/releases)
-[![DOI](https://zenodo.org/badge/242180332.svg)]([https://zenodo.org/badge/latestdoi/242180332](https://arxiv.org/abs/2311.02525))
+[![DOI](https://zenodo.org/badge/242180332.svg)](https://arxiv.org/abs/2311.02525)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ImanRht/QOCO)
 [![GitHub stars](https://img.shields.io/github/stars/ImanRht/QOCO?style=social)](https://github.com/ImanRht/QOCO/stargazers) 
 [![GitHub forks](https://img.shields.io/github/forks/ImanRht/QOCO?style=social)](https://github.com/ImanRht/QOCO/network/members) 
