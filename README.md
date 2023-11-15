@@ -11,6 +11,12 @@
 [![GitHub doi](https://img.shields.io/github/license/ImanRht/QOCO?style=social)](https://github.com/ImanRht/QOCO/blob/master/LICENSE) 
 
 
+
+.. image:: https://zenodo.org/badge/6510063.svg
+   :target: https://zenodo.org/badge/latestdoi/6510063
+   :alt: Zenodo DOI
+
+
 This repository contains the Python code for reproducing the decentralized QOCO (QoE-Oriented Computation Offloading) algorithm, designed for Mobile Edge Computing systems. QOCO leverages Deep Reinforcement Learning to empower mobile devices to make their offloading decisions and select offloading targets, with the aim of maximizing the long-term Quality of Experience (QoE) for each user individually.
 
 ## Contents
