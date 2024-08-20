@@ -15,7 +15,7 @@
 
 
 
-This repository contains the Python code for reproducing the decentralized QOCO (QoE-Oriented Computation Offloading) algorithm, designed for Mobile Edge Computing systems. QOCO leverages Deep Reinforcement Learning to empower mobile devices to make their offloading decisions and select offloading targets, with the aim of maximizing the long-term Quality of Experience (QoE) for each user individually.
+This repository contains the Python code for reproducing the decentralized QECO (QoE-Oriented Computation Offloading) algorithm, designed for Mobile Edge Computing systems. QECO leverages Deep Reinforcement Learning to empower mobile devices to make their offloading decisions and select offloading targets, with the aim of maximizing the long-term Quality of Experience (QoE) for each user individually.
 
 ## Contents
 
