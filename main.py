@@ -1,5 +1,5 @@
 from MEC_Env import MEC
-from DDQN import DuelingDoubleDeepQNetwork
+from D3QN import DuelingDoubleDeepQNetwork
 from Config import Config
 import matplotlib.pyplot as plt
 import numpy as np
@@ -75,10 +75,27 @@ def train(ue_RL_list, NUM_EPISODE):
         print("epsilon  :", ue_RL_list[0].epsilon)
 
         # BITRATE ARRIVAL
-        bitarrive = np.random.uniform(env.min_arrive_size, env.max_arrive_size, size=[env.n_time, env.n_ue])
+        bitarrive_size = np.random.uniform(env.min_arrive_size, env.max_arrive_size, size=[env.n_time, env.n_ue])
         task_prob = env.task_arrive_prob
-        bitarrive = bitarrive * (np.random.uniform(0, 1, size=[env.n_time, env.n_ue]) < task_prob)
-        bitarrive[-env.max_delay:, :] = np.zeros([env.max_delay, env.n_ue])
+        bitarrive_size = bitarrive_size * (np.random.uniform(0, 1, size=[env.n_time, env.n_ue]) < task_prob)
+        bitarrive_size[-env.max_delay:, :] = np.zeros([env.max_delay, env.n_ue])
+
+        print(bitarrive_size)
+
+
+
+        bitarrive_dens = np.zeros([env.n_time, env.n_ue])
+
+        for i in range(len(bitarrive_size)):
+            for j in range(len(bitarrive_size[i])):
+                if bitarrive_size[i][j] != 0:
+                    bitarrive_dens[i][j] = Config.TASK_COMP_DENS[np.random.randint(0, len(Config.TASK_COMP_DENS))]
+
+
+
+        print(bitarrive_dens)
+
+        #print(bitarrive_dens) = [Config.TASK_COMP_DENS[np.random.randint(0, len(Config.TASK_COMP_DENS))] ]
 
         # OBSERVATION MATRIX SETTING
         history = list()
@@ -94,7 +111,7 @@ def train(ue_RL_list, NUM_EPISODE):
         reward_indicator = np.zeros([env.n_time, env.n_ue])
 
         # INITIALIZE OBSERVATION
-        observation_all, lstm_state_all = env.reset(bitarrive)
+        observation_all, lstm_state_all = env.reset(bitarrive_size)
 
         # TRAIN DRL
         while True:
@@ -290,7 +307,7 @@ if __name__ == "__main__":
     for ue in range(Config.N_UE):
         ue_RL_list.append(DuelingDoubleDeepQNetwork(env.n_actions, env.n_features, env.n_lstm_state, env.n_time,
                                                     learning_rate       = Config.LEARNING_RATE,
-                                                    reward_decay        = Config.REWARD_DDECAY,
+                                                    reward_decay        = Config.REWARD_DECAY,
                                                     e_greedy            = Config.E_GREEDY,
                                                     replace_target_iter = Config.N_NETWORK_UPDATE,  # each 200 steps, update target net
                                                     memory_size         = Config.MEMORY_SIZE,  # maximum of memory
