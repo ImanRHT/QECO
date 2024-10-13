@@ -1,7 +1,7 @@
 
 
 class Config(object):
-    N_UE        = 21
+    N_UE        = 25
     N_EDGE      = 2
     N_COMPONENT = 1
     N_EPISODE   = 1000
