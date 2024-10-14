@@ -17,6 +17,7 @@ class MEC:
         self.ue_p_tran     = Config.UE_TRAN_ENERGY
         self.ue_p_idle     = Config.UE_IDLE_ENERGY
         self.edge_p_comp   = Config.EDGE_COMP_ENERGY
+        
 
         self.time_count      = 0
         self.task_count_ue   = 0
@@ -34,11 +35,17 @@ class MEC:
         self.max_arrive_size   = Config.TASK_MAX_SIZE
         self.min_arrive_size   = Config.TASK_MIN_SIZE
         self.arrive_task_size_set    = np.arange(self.min_arrive_size, self.max_arrive_size, 0.1)
-
-        
+        self.energy_state_set   = np.arange(0.25,1, 0.25)
+        self.ue_energy_state = [self.energy_state_set[np.random.randint(0,3)] for ue in range(self.n_ue)]
         self.arrive_task_size   = np.zeros([self.n_time, self.n_ue])
-
         self.arrive_task_dens   = np.zeros([self.n_time, self.n_ue])
+
+
+
+        #print(self.energy_state_set)
+
+        #print(self.ue_energy_state)
+
 
         #self.comp_density=0.297
 
@@ -221,11 +228,10 @@ class MEC:
                 if self.local_process_task[ue_index]['REMAIN'] > 0:
                     if self.local_process_task[ue_index]['REMAIN'] >= (ue_comp_cap / self.local_process_task[ue_index]['DENS']):
                         self.ue_comp_energy[self.local_process_task[ue_index]['TIME'], ue_index] += ue_comp_cap / self.local_process_task[ue_index]['DENS']
-                        self.ue_bit_processed[self.local_process_task[ue_index]['TIME'], ue_index] += ((ue_comp_cap / self.local_process_task[ue_index]['DENS'])*2*self.local_process_task[ue_index]['DENS'])/ (self.comp_cap_ue[ue_index]) # * 0.297 * pow(10,9) * pow(10,-27) * pow(ue_comp_cap * 10 * pow(10,9), 2)
-                    
+                        self.ue_bit_processed[self.local_process_task[ue_index]['TIME'], ue_index] += ((ue_comp_cap / self.local_process_task[ue_index]['DENS']))
                     else:
                         self.ue_comp_energy[self.local_process_task[ue_index]['TIME'], ue_index] += self.local_process_task[ue_index]['REMAIN']
-                        self.ue_bit_processed[self.local_process_task[ue_index]['TIME'], ue_index] += self.local_process_task[ue_index]['REMAIN']*2*self.local_process_task[ue_index]['DENS']/ (self.comp_cap_ue[ue_index]) # * 0.297 * pow(10,9) * pow(10,-27) * pow(ue_comp_cap * 10 * pow(10,9), 2)
+                        self.ue_bit_processed[self.local_process_task[ue_index]['TIME'], ue_index] += self.local_process_task[ue_index]['REMAIN']
 
                     self.local_process_task[ue_index]['REMAIN'] = \
                         self.local_process_task[ue_index]['REMAIN'] - (ue_comp_cap / self.local_process_task[ue_index]['DENS'])
@@ -295,30 +301,17 @@ class MEC:
                     self.edge_drop[ue_index, edge_index] = 0
                     if self.edge_process_task[ue_index][edge_index]['REMAIN'] > 0:
                         if self.edge_process_task[ue_index][edge_index]['REMAIN'] >= (edge_cap / self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]):
-                            self.edge_comp_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += \
-                                (edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]) 
-                        
-                            self.edge_bit_processed[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += \
-                                (5 * (edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]) * 0.297 * pow(10,9)) / (edge_cap * 10 * pow(10,9)) 
-                        
-                            self.ue_idle_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += \
-                                (0.1 * (edge_cap / self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]) * 0.297 * pow(10,9)) / (edge_cap * 10 * pow(10,9) / self.edge_ue_m[edge_index]) 
-
-
+                            self.edge_comp_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += (edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]) 
+                            self.edge_bit_processed[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += (edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index])                      
+                            self.ue_idle_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += (edge_cap / self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]) 
                         else:
                             self.edge_comp_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += self.edge_process_task[ue_index][edge_index]['REMAIN']
-                            self.edge_bit_processed[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += \
-                                (5 * self.edge_process_task[ue_index][edge_index]['REMAIN'] * 0.297 * pow(10,9)) / (edge_cap * 10 * pow(10,9))
+                            self.edge_bit_processed[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += self.edge_process_task[ue_index][edge_index]['REMAIN'] / self.edge_ue_m[edge_index]
+                            self.ue_idle_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += self.edge_process_task[ue_index][edge_index]['REMAIN'] / self.edge_ue_m[edge_index]
 
-                            self.ue_idle_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += \
-                                (0.1 * self.edge_process_task[ue_index][edge_index]['REMAIN'] * 0.297 * pow(10,9)) / (edge_cap * 10 * pow(10,9) / self.edge_ue_m[edge_index]) 
+                        self.edge_process_task[ue_index][edge_index]['REMAIN'] = self.edge_process_task[ue_index][edge_index]['REMAIN'] - edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]
 
 
-                        self.edge_process_task[ue_index][edge_index]['REMAIN'] = \
-                            self.edge_process_task[ue_index][edge_index]['REMAIN'] \
-                            - edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]
-
-                        # if no remain, compute processing delay
                         if self.edge_process_task[ue_index][edge_index]['REMAIN'] <= 0:
                             self.task_history[self.edge_process_task[ue_index][edge_index]['UE_ID']][self.edge_process_task[ue_index][edge_index]['TASK_ID']]['d_state'][self.edge_process_task[ue_index][edge_index]['DIV']] = 1
                             self.edge_process_task[ue_index][edge_index]['REMAIN'] = np.nan
@@ -390,12 +383,12 @@ class MEC:
                 if self.local_transmit_task[ue_index]['REMAIN'] > 0:
 
                     if self.local_transmit_task[ue_index]['REMAIN'] >= ue_tran_cap:
-                        self.ue_tran_energy[self.local_transmit_task[ue_index]['TIME'], ue_index] += ue_tran_cap
-                        self.ue_bit_transmitted[self.local_transmit_task[ue_index]['TIME'], ue_index] += (self.local_transmit_task[ue_index]['REMAIN']  * 0.23 * 10) /self.tran_cap_ue[0][0]
+                        self.ue_tran_energy[self.local_transmit_task[ue_index]['TIME'], ue_index] += self.local_transmit_task[ue_index]['REMAIN'] 
+                        self.ue_bit_transmitted[self.local_transmit_task[ue_index]['TIME'], ue_index] += self.local_transmit_task[ue_index]['REMAIN'] 
                     
                     else:
                         self.ue_tran_energy[self.local_transmit_task[ue_index]['TIME'], ue_index] += self.local_transmit_task[ue_index]['REMAIN']
-                        self.ue_bit_transmitted[self.local_transmit_task[ue_index]['TIME'], ue_index] += (self.local_transmit_task[ue_index]['REMAIN'] * 0.23 * 10) /self.tran_cap_ue[0][0]
+                        self.ue_bit_transmitted[self.local_transmit_task[ue_index]['TIME'], ue_index] += self.local_transmit_task[ue_index]['REMAIN'] 
 
                     self.local_transmit_task[ue_index]['REMAIN'] = \
                         self.local_transmit_task[ue_index]['REMAIN'] \

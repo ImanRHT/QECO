@@ -15,9 +15,21 @@ else:
     os.mkdir("models")
 '''
 
-def reward_fun(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy, delay, max_delay, unfinish_task):
+def reward_fun(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy, delay, max_delay, unfinish_task, ue_energy_state):
+    
+    print(ue_energy_state, "______+_++_")
+
+
     edge_energy  = next((e for e in edge_comp_energy if e != 0), 0)
     idle_energy = next((e for e in ue_idle_energy if e != 0), 0)
+
+
+    energy_cons = ue_comp_energy + ue_trans_energy + edge_energy + idle_energy
+    print(ue_comp_energy , ue_trans_energy , edge_energy , idle_energy, energy_cons)
+
+
+
+
     penalty     = -max_delay*4
     if unfinish_task == 1:
         reward = penalty
@@ -26,14 +38,14 @@ def reward_fun(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy
     reward = reward - (ue_comp_energy + ue_trans_energy + edge_energy + idle_energy)
     return reward
 
-def monitor_reward(ue_RL_list, episode):
-    episode_sum_reward = sum(sum(ue_RL.reward_store[episode]) for ue_RL in ue_RL_list)
-    avg_episode_sum_reward = episode_sum_reward / len(ue_RL_list)
-    print(f"reward: {avg_episode_sum_reward}")
-    return avg_episode_sum_reward
 
 
-def monitor_DropCount(ue_RL_list, episode):
+#def QoE_Function(): 
+
+
+
+
+def Drop_Count(ue_RL_list, episode):
     
   
     drrop = 0 
@@ -44,19 +56,30 @@ def monitor_DropCount(ue_RL_list, episode):
     return drrop
 
 
+def Cal_Cost(ue_RL_list, episode):
+    episode_sum_reward = sum(sum(ue_RL.reward_store[episode]) for ue_RL in ue_RL_list)
+    avg_episode_sum_reward = episode_sum_reward / len(ue_RL_list)
+    #print(f"reward: {avg_episode_sum_reward}")
+    return avg_episode_sum_reward
 
 
-def monitor_Delay(ue_RL_list, episode):
-    delay_ue_list = [sum(ue_RL.delay_store[episode]) for ue_RL in ue_RL_list]
-    avg_delay_in_episode = sum(delay_ue_list) / len(delay_ue_list)
-    print(f"delay: {avg_delay_in_episode}")
+def Cal_Delay(ue_RL_list, episode):
+
+    avg_delay_in_episode = []
+    for i in range(len(ue_RL_list)):
+        for j in range(len(ue_RL_list[i].delay_store[episode])):
+            if ue_RL_list[i].delay_store[episode][j] != 0:
+                avg_delay_in_episode.append(ue_RL_list[i].delay_store[episode][j])
+    avg_delay_in_episode = (sum(avg_delay_in_episode)/len(avg_delay_in_episode))
     return avg_delay_in_episode
 
-def monitor_energy(ue_RL_list, episode):
+def Cal_Energy(ue_RL_list, episode):
     energy_ue_list = [sum(ue_RL.energy_store[episode]) for ue_RL in ue_RL_list]
     avg_energy_in_episode = sum(energy_ue_list) / len(energy_ue_list)
-    print(f"energy: {avg_energy_in_episode}")
+    #print(f"energy: {avg_energy_in_episode}")
     return avg_energy_in_episode
+
+'''
 
 def cal_reward(ue_RL_list):
     total_sum_reward = 0
@@ -74,6 +97,7 @@ def cal_reward(ue_RL_list):
     avg_reward = total_sum_reward / num_episodes
     print(total_sum_reward, avg_reward)
 
+'''
 
 def train(ue_RL_list, NUM_EPISODE):
     avg_reward_list = []
@@ -85,8 +109,10 @@ def train(ue_RL_list, NUM_EPISODE):
     a = 1
 
     for episode in range(NUM_EPISODE):
-        print("episode  :", episode)
-        print("epsilon  :", ue_RL_list[0].epsilon)
+
+        print("\n=============================================================================")
+        print("Episode  :", episode, )
+        print("Epsilon  :", ue_RL_list[0].epsilon)
 
         # BITRATE ARRIVAL
         bitarrive_size = np.random.uniform(env.min_arrive_size, env.max_arrive_size, size=[env.n_time, env.n_ue])
@@ -100,6 +126,11 @@ def train(ue_RL_list, NUM_EPISODE):
                 if bitarrive_size[i][j] != 0:
                     bitarrive_dens[i][j] = Config.TASK_COMP_DENS[np.random.randint(0, len(Config.TASK_COMP_DENS))]
 
+        Check = []
+        for i in range(len(bitarrive_size)):
+            Check.append(sum(bitarrive_size[i]))
+
+        print(sum(Check), "*_*_*_*_*_*_******")
 
 
 
@@ -169,7 +200,8 @@ def train(ue_RL_list, NUM_EPISODE):
                             env.ue_idle_energy[time_index, ue_index],
                             env.process_delay[time_index, ue_index],
                             env.max_delay,
-                            env.unfinish_task[time_index, ue_index]
+                            env.unfinish_task[time_index, ue_index],
+                            env.ue_energy_state[ue_index]
                         )
                         ue_RL_list[ue_index].store_transition(
                             history[time_index][ue_index]['observation'],
@@ -215,13 +247,13 @@ def train(ue_RL_list, NUM_EPISODE):
             # GAME ENDS
             if done:
                 with open("delay.txt", 'a') as f:
-                            f.write('\n' + str(monitor_Delay(ue_RL_list, episode)))
+                            f.write('\n' + str(Cal_Delay(ue_RL_list, episode)))
 
                 with open("energy.txt", 'a') as f:
-                            f.write('\n' + str(monitor_energy(ue_RL_list, episode)))
+                            f.write('\n' + str(Cal_Energy(ue_RL_list, episode)))
 
                 with open("reward.txt", 'a') as f:
-                            f.write('\n' + str(monitor_reward(ue_RL_list, episode)))
+                            f.write('\n' + str(Cal_Cost(ue_RL_list, episode)))
 
 
 
@@ -254,27 +286,20 @@ def train(ue_RL_list, NUM_EPISODE):
                                 drop_task += 1
                 cnt = len(env.task_history) * len(env.task_history[0]) * env.n_component
 
-                #a = monitor_DropCount(ue_RL_list, episode)
+                #a = Drop_Count(ue_RL_list, episode)
 
 
-                print("++++++++++++++++++++++")
-                print("drrop_rate   : ", full_drop_task)
-                print("full_drrop   : ", full_drop_task)
-                print("full_complate: ", full_complete_task)
-                print("complete_task: ", complete_task)
-                print("drop_task:     ", drop_task)
-                print("++++++++++++++++++++++")
 
                 if episode % 999 == 0 and episode != 0:
                     os.mkdir("models" + "/" + str(episode))
                     for ue in range(env.n_ue):
                         ue_RL_list[ue].saver.save(ue_RL_list[ue].sess, "models/" + str(episode) +'/'+ str(ue) + "_X_model" +'/model.ckpt', global_step=episode)
 
-                avg_reward_list.append(-(monitor_reward(ue_RL_list, episode)))
+                avg_reward_list.append(-(Cal_Cost(ue_RL_list, episode)))
                 if episode % 10 == 0:
                     avg_reward_list_2.append(sum(avg_reward_list[episode-10:episode])/10)
-                    avg_delay_list_in_episode.append(monitor_Delay(ue_RL_list, episode))
-                    avg_energy_list_in_episode.append(monitor_energy(ue_RL_list, episode))
+                    avg_delay_list_in_episode.append(Cal_Delay(ue_RL_list, episode))
+                    avg_energy_list_in_episode.append(Cal_Energy(ue_RL_list, episode))
                     total_drop = full_drop_task
                     num_task_drop_list_in_episode.append(total_drop)
 
@@ -313,11 +338,28 @@ def train(ue_RL_list, NUM_EPISODE):
                 edge_comp_energy = sum(sum(env.edge_comp_energy))
                 ue_idle_energy = sum(sum(env.ue_idle_energy))
 
+                avg_delay  = Cal_Delay(ue_RL_list, episode)
+                avg_energy = Cal_Energy(ue_RL_list, episode)
+                avg_cost   = Cal_Cost(ue_RL_list, episode)
+                #avg_QoE    = Cal_QoE(ue_RL_list, episode)
+
                 # Print results
-                print(int(ue_bit_processed), ue_comp_energy, "local")
-                print(int(ue_bit_transmitted), ue_tran_energy, "trans")
-                print(int(sum(edge_bit_processed)),sum(edge_comp_energy), sum(ue_idle_energy), "edge")
-                print("_________________________________________________")
+
+                print("SystemPerformance: ---------------------------------------------------------------------")
+                print("Num_Completed :  ", complete_task)
+                print("Num_Dropped   :  ", drop_task)
+                print("Avg_Delay     :  ", avg_delay)
+                print("Avg_Energy    :  ", avg_energy)
+                print("Avg_Cost      :  ", avg_cost)
+                print("Avg_QoE       :  ", )
+                print("EnergyCosumption: ----------------------------------------------------------------------")
+                print("Local         :  ", "ue_bit_processed:", int(ue_bit_processed),        "|  ue_comp_energy:".ljust(15), ue_comp_energy)
+                print("Trans         :  ", "ue_bit_transmitted:", int(ue_bit_transmitted),      "|  ue_tran_energy:".ljust(15), ue_tran_energy)
+                print("Edges         :  ", "edge_bit_processed :", int(sum(edge_bit_processed)), "|  edge_comp_energy:".ljust(15), int(sum(edge_comp_energy)), "|  ue_idle_energy:", sum(ue_idle_energy))
+                #print("--------------------------------------------------------------------------------------------------------")
+
+    
+
 
                 break # Training Finished
 
