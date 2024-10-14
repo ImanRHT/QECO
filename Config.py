@@ -2,7 +2,7 @@ class Config(object):
     
     # System setup
     N_UE             = 10                   # Number of Mobile Devices
-    N_EDGE           = 2                    # Number of Edge Servers
+    N_EDGE           = 2                   # Number of Edge Servers
     UE_COMP_CAP      = 2.6                  # Mobile Device Computation Capacity
     UE_TRAN_CAP      = 14                   # Mobile Device Transmission Capacity
     EDGE_COMP_CAP    = 42.8                 # Edge Servers Computation Capacity
@@ -15,7 +15,7 @@ class Config(object):
     EDGE_COMP_ENERGY = 5                    # Computation Power of Edge Server
 
     # Task Requrement
-    TASK_COMP_DENS   = [197, 297 , 397]      # Task Computation Density
+    TASK_COMP_DENS   = [0.197, 0.297 , 0.397]      # Task Computation Density
     
     #TASK_COMP_DENS   = 0.297
 

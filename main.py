@@ -32,7 +32,21 @@ def monitor_reward(ue_RL_list, episode):
     print(f"reward: {avg_episode_sum_reward}")
     return avg_episode_sum_reward
 
-def monitor_delay(ue_RL_list, episode):
+
+def monitor_DropCount(ue_RL_list, episode):
+    
+  
+    drrop = 0 
+    for i in range(len(ue_RL_list)):
+        print(ue_RL_list[i].delay_store[episode], "____")
+
+    print(f"Drop: {drrop}")
+    return drrop
+
+
+
+
+def monitor_Delay(ue_RL_list, episode):
     delay_ue_list = [sum(ue_RL.delay_store[episode]) for ue_RL in ue_RL_list]
     avg_delay_in_episode = sum(delay_ue_list) / len(delay_ue_list)
     print(f"delay: {avg_delay_in_episode}")
@@ -80,12 +94,7 @@ def train(ue_RL_list, NUM_EPISODE):
         bitarrive_size = bitarrive_size * (np.random.uniform(0, 1, size=[env.n_time, env.n_ue]) < task_prob)
         bitarrive_size[-env.max_delay:, :] = np.zeros([env.max_delay, env.n_ue])
 
-        print(bitarrive_size)
-
-
-
         bitarrive_dens = np.zeros([env.n_time, env.n_ue])
-
         for i in range(len(bitarrive_size)):
             for j in range(len(bitarrive_size[i])):
                 if bitarrive_size[i][j] != 0:
@@ -93,7 +102,7 @@ def train(ue_RL_list, NUM_EPISODE):
 
 
 
-        print(bitarrive_dens)
+
 
         #print(bitarrive_dens) = [Config.TASK_COMP_DENS[np.random.randint(0, len(Config.TASK_COMP_DENS))] ]
 
@@ -111,7 +120,7 @@ def train(ue_RL_list, NUM_EPISODE):
         reward_indicator = np.zeros([env.n_time, env.n_ue])
 
         # INITIALIZE OBSERVATION
-        observation_all, lstm_state_all = env.reset(bitarrive_size)
+        observation_all, lstm_state_all = env.reset(bitarrive_size, bitarrive_dens)
 
         # TRAIN DRL
         while True:
@@ -205,6 +214,19 @@ def train(ue_RL_list, NUM_EPISODE):
 
             # GAME ENDS
             if done:
+                with open("delay.txt", 'a') as f:
+                            f.write('\n' + str(monitor_Delay(ue_RL_list, episode)))
+
+                with open("energy.txt", 'a') as f:
+                            f.write('\n' + str(monitor_energy(ue_RL_list, episode)))
+
+                with open("reward.txt", 'a') as f:
+                            f.write('\n' + str(monitor_reward(ue_RL_list, episode)))
+
+
+
+
+
                 for task in env.task_history:
                     cmpl = drp = 0
                     for t in task:
@@ -232,8 +254,11 @@ def train(ue_RL_list, NUM_EPISODE):
                                 drop_task += 1
                 cnt = len(env.task_history) * len(env.task_history[0]) * env.n_component
 
+                #a = monitor_DropCount(ue_RL_list, episode)
+
+
                 print("++++++++++++++++++++++")
-                print("drrop_rate   : ", full_drop_task/(cnt/env.n_component))
+                print("drrop_rate   : ", full_drop_task)
                 print("full_drrop   : ", full_drop_task)
                 print("full_complate: ", full_complete_task)
                 print("complete_task: ", complete_task)
@@ -248,7 +273,7 @@ def train(ue_RL_list, NUM_EPISODE):
                 avg_reward_list.append(-(monitor_reward(ue_RL_list, episode)))
                 if episode % 10 == 0:
                     avg_reward_list_2.append(sum(avg_reward_list[episode-10:episode])/10)
-                    avg_delay_list_in_episode.append(monitor_delay(ue_RL_list, episode))
+                    avg_delay_list_in_episode.append(monitor_Delay(ue_RL_list, episode))
                     avg_energy_list_in_episode.append(monitor_energy(ue_RL_list, episode))
                     total_drop = full_drop_task
                     num_task_drop_list_in_episode.append(total_drop)
