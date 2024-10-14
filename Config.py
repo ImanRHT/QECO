@@ -2,7 +2,7 @@ class Config(object):
     
     # System setup
     N_UE             = 10                   # Number of Mobile Devices
-    N_EDGE           = 5                   # Number of Edge Servers
+    N_EDGE           = 2                   # Number of Edge Servers
     UE_COMP_CAP      = 2.6                  # Mobile Device Computation Capacity
     UE_TRAN_CAP      = 14                   # Mobile Device Transmission Capacity
     EDGE_COMP_CAP    = 42.8                 # Edge Servers Computation Capacity
@@ -29,7 +29,7 @@ class Config(object):
     N_EPISODE        = 1000                 # Number of Episodes
     N_TIME_SLOT      = 100                  # Number of Time Slots
     DURATION         = 0.1                  # Time Slot Duration
-    TASK_ARRIVE_PROB = 0.1                  # Task Generation Probability
+    TASK_ARRIVE_PROB = 0.3                  # Task Generation Probability
     N_TIME = N_TIME_SLOT + MAX_DELAY
 
 

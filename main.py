@@ -15,9 +15,18 @@ else:
     os.mkdir("models")
 '''
 
+
+
+def normalize(parameter, minimum, maximum):
+    normalized_parameter = (parameter - minimum) / (maximum - minimum)
+    return normalized_parameter
+
+
+
+
+
 def reward_fun(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy, delay, max_delay, unfinish_task, ue_energy_state):
     
-    print(ue_energy_state, "______+_++_")
 
 
     edge_energy  = next((e for e in edge_comp_energy if e != 0), 0)
@@ -25,7 +34,21 @@ def reward_fun(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy
 
 
     energy_cons = ue_comp_energy + ue_trans_energy + edge_energy + idle_energy
-    print(ue_comp_energy , ue_trans_energy , edge_energy , idle_energy, energy_cons)
+    #print(ue_comp_energy , ue_trans_energy , edge_energy , idle_energy)
+    #print(ue_energy_state, delay, energy_cons)
+
+    
+    scaled_energy = normalize(energy_cons, 0, 20)*10
+    Cost = 2 * ((ue_energy_state * delay) + ((1 - ue_energy_state) * scaled_energy))
+
+    print("+_+_+_------------", delay, scaled_energy)
+    print("+_+_+_------------", ue_energy_state , int(delay+ scaled_energy), int(Cost))
+
+
+
+
+
+
 
 
 
@@ -35,7 +58,7 @@ def reward_fun(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy
         reward = penalty
     else:
         reward = 0
-    reward = reward - (ue_comp_energy + ue_trans_energy + edge_energy + idle_energy)
+    reward = Cost
     return reward
 
 
