@@ -206,12 +206,12 @@ class DuelingDoubleDeepQNetwork:
             action = np.argmax(actions_value)
 
         else:
-        
-
-            if np.random.randint(0,100) < 20:
-                action = np.random.randint(1, self.n_actions)   
-            else: 
+    
+            if np.random.randint(0,100)>50:
                 action = 0
+            else:
+                action = np.random.randint(1, self.n_actions)   
+        
         
         
         return action

@@ -22,10 +22,15 @@ class MEC:
         self.time_count      = 0
         self.task_count_ue   = 0
         self.task_count_edge = 0
-        self.n_actions       = self.n_component + 1
+        self.n_actions       = 1 + self.n_edge
         self.n_features      = 1 + 1 + 1 + self.n_edge
         self.n_lstm_state    = self.n_edge
+
+        self.drop_trans_count = 0
+        self.drop_edge_count = 0
+        self.drop_ue_count = 0
   
+
         # Computation and transmission capacities
         self.comp_cap_ue   = Config.UE_COMP_CAP * np.ones(self.n_ue) * self.duration
         self.comp_cap_edge = Config.EDGE_COMP_CAP * np.ones([self.n_edge]) * self.duration
@@ -35,11 +40,12 @@ class MEC:
         self.max_arrive_size   = Config.TASK_MAX_SIZE
         self.min_arrive_size   = Config.TASK_MIN_SIZE
         self.arrive_task_size_set    = np.arange(self.min_arrive_size, self.max_arrive_size, 0.1)
-        self.energy_state_set   = np.arange(0.25,1, 0.25)
-        self.ue_energy_state = [self.energy_state_set[np.random.randint(0,3)] for ue in range(self.n_ue)]
+        #self.energy_state_set   = np.arange(0.25,1, 0.25) 
+        self.ue_energy_state = [Config.TASK_COMP_DENS[np.random.randint(0,len(Config.TASK_COMP_DENS))] for ue in range(self.n_ue)]
         self.arrive_task_size   = np.zeros([self.n_time, self.n_ue])
         self.arrive_task_dens   = np.zeros([self.n_time, self.n_ue])
 
+        print(self.ue_energy_state)
 
 
         #print(self.energy_state_set)
@@ -89,22 +95,35 @@ class MEC:
         self.task_history = [[] for _ in range(self.n_ue)]
 
     def reset(self, arrive_task_size, arrive_task_dens):
+    
+        self.drop_trans_count = 0
+        self.drop_edge_count = 0
+        self.drop_ue_count = 0
+
         # Reset variables and queues
         self.task_history = [[] for _ in range(self.n_ue)]
         self.UE_TASK = [-1] * self.n_ue
         self.drop_edge_count = 0
+
         self.arrive_task_size = arrive_task_size
         self.arrive_task_dens = arrive_task_dens
+
         self.time_count = 0
+
         self.local_process_task = []
         self.local_transmit_task = []
         self.edge_process_task = []
-        self.t_ue_comp = -np.ones([self.n_ue])
-        self.t_ue_tran = -np.ones([self.n_ue])
-        self.b_edge_comp = np.zeros([self.n_ue, self.n_edge])
+
+
+
         self.ue_computation_queue = [queue.Queue() for _ in range(self.n_ue)]
         self.ue_transmission_queue = [queue.Queue() for _ in range(self.n_ue)]
         self.edge_computation_queue = [[queue.Queue() for _ in range(self.n_edge)] for _ in range(self.n_ue)]
+        
+        self.t_ue_comp = -np.ones([self.n_ue])
+        self.t_ue_tran = -np.ones([self.n_ue])
+        self.b_edge_comp = np.zeros([self.n_ue, self.n_edge])
+
         self.process_delay = np.zeros([self.n_time, self.n_ue])
         self.ue_bit_processed = np.zeros([self.n_time, self.n_ue])
         self.edge_bit_processed = np.zeros([self.n_time, self.n_ue, self.n_edge])
@@ -116,6 +135,7 @@ class MEC:
         self.unfinish_task = np.zeros([self.n_time, self.n_ue])
         self.process_delay_trans = np.zeros([self.n_time, self.n_ue])
         self.edge_drop = np.zeros([self.n_ue, self.n_edge])
+
         self.local_process_task = [{'DIV': np.nan, 'UE_ID': np.nan, 'TASK_ID': np.nan, 'SIZE': np.nan,
                                     'TIME': np.nan, 'EDGE': np.nan, 'REMAIN': np.nan} for _ in range(self.n_ue)]
         self.local_transmit_task = [{'DIV': np.nan, 'UE_ID': np.nan, 'TASK_ID': np.nan, 'SIZE': np.nan,
@@ -140,19 +160,47 @@ class MEC:
     # perform action, observe state and delay (several steps later)
     def step(self, action):
     
-        # EXTRACT ACTION FOR EACH ue
+
         ue_action_local = np.zeros([self.n_ue], np.int32)
         ue_action_offload = np.zeros([self.n_ue], np.int32)
-        ue_action_edge = np.zeros([self.n_ue], np.int32)
-        ue_action_component = np.zeros([self.n_ue], np.int32)-1
 
+        for ue_index in range(self.n_ue):
+            ue_action = action[ue_index]
+            ue_action_offload[ue_index] = int(ue_action - 1)
+            if ue_action == 0:
+                ue_action_local[ue_index] = 1
+
+
+        #ue_action_offload = np.zeros([self.n_ue], np.int32)
+        ue_action_component = np.zeros([self.n_ue], np.int32)-1
         random_list  = []
         for i in range(self.n_component):
             random_list.append(i)
-       
 
 
         for ue_index in range(self.n_ue):
+
+            ue_comp_cap = np.squeeze(self.comp_cap_ue[ue_index])
+            ue_arrive_task_size = np.squeeze(self.arrive_task_size[self.time_count, ue_index])
+            ue_arrive_task_dens = np.squeeze(self.arrive_task_dens[self.time_count, ue_index])
+        
+            tmp_dict = {
+                'DIV' : 0 , 
+                'UE_ID': ue_index,
+                'TASK_ID': self.UE_TASK[ue_index],
+                'SIZE': ue_arrive_task_size,
+                'DENS': ue_arrive_task_dens,
+                'TIME': self.time_count,
+                'EDGE': ue_action_offload[ue_index],
+            }
+
+            if ue_action_local[ue_index] == 1:
+                self.ue_computation_queue[ue_index].put(tmp_dict)
+
+
+
+
+            '''
             component_list = np.zeros([self.n_component], np.int32)-1
             state_list = np.zeros([self.n_component], np.int32)
             ue_action = action[ue_index]
@@ -183,6 +231,7 @@ class MEC:
                 }
                 self.task_history[ue_index].append(task_dic) 
 
+            
             for component in range(self.n_component):
                 temp_dic = {
                     'DIV': component,
@@ -194,10 +243,12 @@ class MEC:
                     'EDGE': component_list[component],
                     'd_state': state_list[component]
                 }
-                if component_list[component] > -1:
-                    self.ue_transmission_queue[ue_index].put(temp_dic) 
-                else:
-                    self.ue_computation_queue[ue_index].put(temp_dic)
+                #if component_list[component] > -1:
+                    #self.ue_transmission_queue[ue_index].put(temp_dic) 
+                #else:
+                    #self.ue_computation_queue[ue_index].put(temp_dic)
+            '''
+
 
             for cycle in range(self.n_cycle):    
                 ue_comp_cap = np.squeeze(self.comp_cap_ue[ue_index])/self.n_cycle
@@ -206,6 +257,7 @@ class MEC:
                         and (not self.ue_computation_queue[ue_index].empty()):
                     while not self.ue_computation_queue[ue_index].empty():
                         get_task = self.ue_computation_queue[ue_index].get()
+                        #print(get_task)
                         if get_task['SIZE'] != 0:
                             if self.time_count - get_task['TIME'] + 1 <= self.max_delay:
                                 self.local_process_task[ue_index]['UE_ID']    = get_task['UE_ID']
@@ -218,7 +270,7 @@ class MEC:
 
                                 break
                             else:
-                                self.task_history[ue_index][get_task['TASK_ID']]['d_state'][get_task['DIV']] = -1
+                                #self.task_history[ue_index][get_task['TASK_ID']]['d_state'][get_task['DIV']] = -1
                                 
                                 self.process_delay[get_task['TIME'], ue_index] = self.max_delay
                                 self.unfinish_task[get_task['TIME'], ue_index] = 1
@@ -237,33 +289,37 @@ class MEC:
 
 
                     self.local_process_task[ue_index]['REMAIN'] = \
-                        self.local_process_task[ue_index]['REMAIN'] - (ue_comp_cap / self.local_process_task[ue_index]['DENS'])
+                        self.local_process_task[ue_index]['REMAIN'] - ue_comp_cap / self.local_process_task[ue_index]['DENS']
+
+                    #print(self.local_process_task[ue_index]['REMAIN'])
+                    #print(ue_comp_cap, self.local_process_task[ue_index]['DENS'])
 
                     # if no remain, compute processing delay
                     if self.local_process_task[ue_index]['REMAIN'] <= 0: 
-
-                        self.task_history[ue_index][self.local_process_task[ue_index]['TASK_ID']]['d_state'][self.local_process_task[ue_index]['DIV']] = 1 
+                        self.process_delay[self.local_process_task[ue_index]['TIME'], ue_index] \
+                            = self.time_count - self.local_process_task[ue_index]['TIME'] + 1
                         self.local_process_task[ue_index]['REMAIN'] = np.nan
-                        
-                        if sum(self.task_history[ue_index][self.local_process_task[ue_index]['TASK_ID']]['d_state']) > self.n_component-1:
-                            self.process_delay[self.local_process_task[ue_index]['TIME'], ue_index] \
-                                = self.time_count - self.local_process_task[ue_index]['TIME'] + 1
+                        #print("hi")
+
+                        #self.task_history[ue_index][self.local_process_task[ue_index]['TASK_ID']]['d_state'][self.local_process_task[ue_index]['DIV']] = 1 
+                        #if sum(self.task_history[ue_index][self.local_process_task[ue_index]['TASK_ID']]['d_state']) > self.n_component-1:
+
 
                     elif self.time_count - self.local_process_task[ue_index]['TIME'] + 1 == self.max_delay:
-                        self.task_history[ue_index][self.local_process_task[ue_index]['TASK_ID']]['d_state'][self.local_process_task[ue_index]['DIV']] = -1
+                        #self.task_history[ue_index][self.local_process_task[ue_index]['TASK_ID']]['d_state'][self.local_process_task[ue_index]['DIV']] = -1
                         self.local_process_task[ue_index]['REMAIN'] = np.nan
                         self.process_delay[self.local_process_task[ue_index]['TIME'], ue_index] = self.max_delay
                         self.unfinish_task[self.local_process_task[ue_index]['TIME'], ue_index] = 1
-          
+                        self.drop_ue_count = self.drop_ue_count + 1
 
                     # OTHER INFO self.t_ue_comp[ue_index]
                     # update self.t_ue_comp[ue_index] only when ue_bitrate != 0
-            if ue_arrive_task_size != 0:
-                tmp_tilde_t_ue_comp = np.max([self.t_ue_comp[ue_index] + 1, self.time_count])
-                self.t_ue_comp[ue_index] = np.min([tmp_tilde_t_ue_comp
-                                                                + math.ceil(ue_arrive_task_size * ue_action_local[ue_index]
-                                                                / (np.squeeze(self.comp_cap_ue[ue_index]) / ue_arrive_task_dens)) - 1,
-                                                                self.time_count + self.max_delay - 1])
+                if ue_arrive_task_size != 0:
+                    tmp_tilde_t_ue_comp = np.max([self.t_ue_comp[ue_index] + 1, self.time_count])
+                    self.t_ue_comp[ue_index] = np.min([tmp_tilde_t_ue_comp
+                                                                    + math.ceil(ue_arrive_task_size * ue_action_local[ue_index]
+                                                                    / (np.squeeze(self.comp_cap_ue[ue_index]) / ue_arrive_task_dens)) - 1,
+                                                                    self.time_count + self.max_delay - 1])
 
 
 
@@ -294,7 +350,7 @@ class MEC:
                                 break
                             else:
                                 
-                                self.task_history[get_task['UE_ID']][get_task['TASK_ID']]['d_state'][get_task['DIV']] = -1
+                                #self.task_history[get_task['UE_ID']][get_task['TASK_ID']]['d_state'][get_task['DIV']] = -1
                                 self.process_delay[get_task['TIME'], ue_index] = self.max_delay
                                 self.unfinish_task[get_task['TIME'], ue_index] = 1
 
@@ -302,7 +358,9 @@ class MEC:
                 #    print(self.edge_process_task[ue_index][edge_index], "f_________")
                     # PROCESS
                     self.edge_drop[ue_index, edge_index] = 0
+
                     if self.edge_process_task[ue_index][edge_index]['REMAIN'] > 0:
+    
                         if self.edge_process_task[ue_index][edge_index]['REMAIN'] >= (edge_cap / self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]):
                             self.edge_comp_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += (edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS']) * (self.edge_p_comp * self.duration)
                             self.edge_bit_processed[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += (edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index])                      
@@ -313,26 +371,29 @@ class MEC:
                             self.ue_idle_energy[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index, edge_index] += (self.edge_process_task[ue_index][edge_index]['REMAIN'] / self.edge_ue_m[edge_index]) * self.ue_p_idle  
 
                         self.edge_process_task[ue_index][edge_index]['REMAIN'] = self.edge_process_task[ue_index][edge_index]['REMAIN'] - edge_cap/ self.edge_process_task[ue_index][edge_index]['DENS'] / self.edge_ue_m[edge_index]
-
+                        
+                        
 
                         if self.edge_process_task[ue_index][edge_index]['REMAIN'] <= 0:
-                            self.task_history[self.edge_process_task[ue_index][edge_index]['UE_ID']][self.edge_process_task[ue_index][edge_index]['TASK_ID']]['d_state'][self.edge_process_task[ue_index][edge_index]['DIV']] = 1
+                            self.process_delay[self.edge_process_task[ue_index][edge_index]['TIME'],ue_index] \
+                                = self.time_count - self.edge_process_task[ue_index][edge_index]['TIME'] + 1
+
+                            #self.task_history[self.edge_process_task[ue_index][edge_index]['UE_ID']][self.edge_process_task[ue_index][edge_index]['TASK_ID']]['d_state'][self.edge_process_task[ue_index][edge_index]['DIV']] = 1
                             self.edge_process_task[ue_index][edge_index]['REMAIN'] = np.nan
-
-
+                            '''
                             if sum(self.task_history[ue_index][self.edge_process_task[ue_index][edge_index]['TASK_ID']]['d_state']) > self.n_component-1:
                                 self.process_delay[self.edge_process_task[ue_index][edge_index]['TIME'],ue_index] \
                                     = self.time_count - self.edge_process_task[ue_index][edge_index]['TIME'] + 1
-
+                            '''
 
 
                         elif self.time_count - self.edge_process_task[ue_index][edge_index]['TIME'] + 1 == self.max_delay:
-                            self.task_history[self.edge_process_task[ue_index][edge_index]['UE_ID']][self.edge_process_task[ue_index][edge_index]['TASK_ID']]['d_state'][self.edge_process_task[ue_index][edge_index]['DIV']] = -1
+                            #self.task_history[self.edge_process_task[ue_index][edge_index]['UE_ID']][self.edge_process_task[ue_index][edge_index]['TASK_ID']]['d_state'][self.edge_process_task[ue_index][edge_index]['DIV']] = -1
                             self.edge_process_task[ue_index][edge_index]['REMAIN'] = np.nan
                             self.edge_drop[ue_index, edge_index] = self.edge_process_task[ue_index][edge_index]['REMAIN']
                             self.process_delay[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index] = self.max_delay
                             self.unfinish_task[self.edge_process_task[ue_index][edge_index]['TIME'], ue_index] = 1
-                   
+                            self.drop_edge_count = self.drop_edge_count + 1
 
 
                         #self.TASK_log[ue_index][self.edge_process_task[ue_index][edge_index]['TASK_ID']]['state'] = 2
@@ -352,7 +413,29 @@ class MEC:
 
 
         for ue_index in range(self.n_ue):
-            ue_tran_cap = np.squeeze(self.tran_cap_ue[ue_index,:])[1]/self.n_cycle
+            #ue_tran_cap = np.squeeze(self.tran_cap_ue[ue_index,:])[1]/self.n_cycle
+
+            ue_tran_cap = np.squeeze(self.tran_cap_ue[ue_index,:])[0]
+            ue_arrive_task_size = np.squeeze(self.arrive_task_size[self.time_count, ue_index])
+            ue_arrive_task_dens = np.squeeze(self.arrive_task_dens[self.time_count, ue_index])
+        
+            tmp_dict = {
+                'DIV' : 0 , 
+                'UE_ID': ue_index,
+                'TASK_ID': self.UE_TASK[ue_index],
+                'SIZE': ue_arrive_task_size,
+                'DENS': ue_arrive_task_dens,
+                'TIME': self.time_count,
+                'EDGE': ue_action_offload[ue_index],
+            }
+
+
+            if ue_action_local[ue_index] == 0:
+                self.ue_transmission_queue[ue_index].put(tmp_dict)
+
+          
+
+
             
             for cycle in range(self.n_cycle):
 
@@ -361,6 +444,7 @@ class MEC:
                         and (not self.ue_transmission_queue[ue_index].empty()):
                     while not self.ue_transmission_queue[ue_index].empty():
                         get_task = self.ue_transmission_queue[ue_index].get()
+                        #print("trans", get_task)
                         if get_task['SIZE'] != 0:
                             
                             #self.TASK_log[ue_index][get_task['TASK_ID']] = get_task
@@ -377,7 +461,7 @@ class MEC:
                                 self.local_transmit_task[ue_index]['DIV'] = get_task['DIV']
                                 break
                             else:
-                                self.task_history[get_task['UE_ID']][get_task['TASK_ID']]['d_state'][get_task['DIV']] = -1
+                                #self.task_history[get_task['UE_ID']][get_task['TASK_ID']]['d_state'][get_task['DIV']] = -1
                                 self.process_delay[get_task['TIME'], ue_index] = self.max_delay
                                 self.unfinish_task[get_task['TIME'], ue_index] = 1
 
@@ -397,6 +481,8 @@ class MEC:
                         self.local_transmit_task[ue_index]['REMAIN'] \
                         - ue_tran_cap
 
+                    #print(ue_tran_cap)
+
                     # UPDATE edge QUEUE
                     if self.local_transmit_task[ue_index]['REMAIN'] <= 0:
                         tmp_dict = {'UE_ID': self.local_transmit_task[ue_index]['UE_ID'],
@@ -409,6 +495,7 @@ class MEC:
 
         
                         self.edge_computation_queue[ue_index][self.local_transmit_task[ue_index]['EDGE']].put(tmp_dict)
+                        print(self.local_transmit_task[ue_index]['EDGE'])
                         self.task_count_edge = self.task_count_edge + 1
 
                         edge_index = self.local_transmit_task[ue_index]['EDGE']
@@ -419,20 +506,20 @@ class MEC:
 
 
                     elif self.time_count - self.local_transmit_task[ue_index]['TIME'] + 1 == self.max_delay:
-                        self.task_history[self.local_transmit_task[ue_index]['UE_ID']][self.local_transmit_task[ue_index]['TASK_ID']]['d_state'][self.local_transmit_task[ue_index]['DIV']] = -1
+                        #self.task_history[self.local_transmit_task[ue_index]['UE_ID']][self.local_transmit_task[ue_index]['TASK_ID']]['d_state'][self.local_transmit_task[ue_index]['DIV']] = -1
                         self.local_transmit_task[ue_index]['REMAIN'] = np.nan
                         self.process_delay[self.local_transmit_task[ue_index]['TIME'], ue_index] = self.max_delay
                         self.unfinish_task[self.local_transmit_task[ue_index]['TIME'], ue_index] = 1
-                   
+                        self.drop_trans_count = self.drop_trans_count + 1
 
-                # OTHER INFO
-            if ue_arrive_task_size != 0:
-                tmp_tilde_t_ue_comp = np.max([self.t_ue_comp[ue_index] + 1, self.time_count])
-                self.t_ue_comp[ue_index] = np.min([tmp_tilde_t_ue_comp
-                                                        + math.ceil(ue_arrive_task_size * (1 - ue_action_local[ue_index])
-                                                        / np.squeeze(self.tran_cap_ue[ue_index,:])[1]) - 1,
-                                                        self.time_count + self.max_delay - 1])
-        
+                    # OTHER INFO
+                if ue_arrive_task_size != 0:
+                    tmp_tilde_t_ue_comp = np.max([self.t_ue_comp[ue_index] + 1, self.time_count])
+                    self.t_ue_comp[ue_index] = np.min([tmp_tilde_t_ue_comp
+                                                            + math.ceil(ue_arrive_task_size * (1 - ue_action_local[ue_index])
+                                                            / np.squeeze(self.tran_cap_ue[ue_index,:])[1]) - 1,
+                                                            self.time_count + self.max_delay - 1])
+            
 
 
 

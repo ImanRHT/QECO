@@ -29,11 +29,23 @@ def QoE_Function(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_ener
     
 
 
+
+    penalty = - max_delay * 4
+
+    if unfinish_task:
+        reward = penalty
+    else:
+        reward = - delay
+
+    return reward
+
+    '''
+
     edge_energy  = next((e for e in edge_comp_energy if e != 0), 0)
     idle_energy = next((e for e in ue_idle_energy if e != 0), 0)
 
 
-    energy_cons = ue_comp_energy + ue_trans_energy + edge_energy + idle_energy
+    energy_cons = ue_comp_energy + ue_trans_energy #+ edge_energy + idle_energy
     #print(ue_comp_energy , ue_trans_energy , edge_energy , idle_energy)
     #print(ue_energy_state, delay, energy_cons)
 
@@ -46,18 +58,18 @@ def QoE_Function(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_ener
 
 
 
-    Reward = max_delay*5
+    Reward = max_delay*3
 
     
     if delay < max_delay:
-        QoE = Reward - Cost
+        QoE = - delay
     else:
-        QoE = - Cost
+        QoE = - delay - max_delay*2
 
     #print(QoE, -Cost)
     
     return QoE
-
+    '''
 
 
 #def QoE_Function(): 
@@ -67,19 +79,30 @@ def QoE_Function(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_ener
 
 def Drop_Count(ue_RL_list, episode):
     
-  
-    drrop = 0 
-    for i in range(len(ue_RL_list)):
-        print(ue_RL_list[i].delay_store[episode], "____")
 
-    print(f"Drop: {drrop}")
+    print(env.unfinish_task.shape)
+    drrop_delay10 = 0 
+    drrop = 0
+    for time_index in range(100):   
+        drrop = drrop + sum(env.unfinish_task[time_index])
+
+
+
+
+    for i in range(len(ue_RL_list)):
+        for j in range(len(ue_RL_list[i].delay_store[episode])):
+            if ue_RL_list[i].delay_store[episode][j] == 10:
+                drrop_delay10 = drrop_delay10+1
+
+
+    print("-----------", drrop_delay10, drrop)
     return drrop
 
 
 def Cal_QoE(ue_RL_list, episode):
     episode_sum_reward = sum(sum(ue_RL.reward_store[episode]) for ue_RL in ue_RL_list)
     avg_episode_sum_reward = episode_sum_reward / len(ue_RL_list)
-    #print(f"reward: {avg_episode_sum_reward}")
+    print(f"reward: {avg_episode_sum_reward}")
     return avg_episode_sum_reward
 
 
@@ -146,11 +169,24 @@ def train(ue_RL_list, NUM_EPISODE):
                 if bitarrive_size[i][j] != 0:
                     bitarrive_dens[i][j] = Config.TASK_COMP_DENS[np.random.randint(0, len(Config.TASK_COMP_DENS))]
 
+
+        test = 0 
+        for i in range(len(bitarrive_size)):
+            for j in range(len(bitarrive_size[i])):
+                if bitarrive_size[i][j] != 0: 
+                    test = test + 1
+
+        print("Num_Task_Arrive: ", test)
+
+
+
         Check = []
         for i in range(len(bitarrive_size)):
             Check.append(sum(bitarrive_size[i]))
 
-        print(sum(Check), "*_*_*_*_*_*_******")
+        #print("Sum_Arrived_Task_Size:", int(sum(Check)))
+
+       
 
 
 
@@ -175,7 +211,8 @@ def train(ue_RL_list, NUM_EPISODE):
 
         # TRAIN DRL
         while True:
-
+    
+    
             # PERFORM ACTION
             action_all = np.zeros([env.n_ue])
             for ue_index in range(env.n_ue):
@@ -197,20 +234,16 @@ def train(ue_RL_list, NUM_EPISODE):
 
             # STORE MEMORY; STORE TRANSITION IF THE TASK PROCESS DELAY IS JUST UPDATED
             for ue_index in range(env.n_ue):
-                obs = observation_all[ue_index, :]
-                lstm = np.squeeze(lstm_state_all[ue_index, :])
-                action = action_all[ue_index]
-                obs_ = observation_all_[ue_index]
-                lstm_ = np.squeeze(lstm_state_all_[ue_index,:])
-                history[env.time_count - 1][ue_index].update({
-                    'observation': obs,
-                    'lstm': lstm,
-                    'action': action,
-                    'observation_': obs_,
-                    'lstm_': lstm_
-                })
+    
+                history[env.time_count - 1][ue_index]['observation'] = observation_all[ue_index, :]
+                history[env.time_count - 1][ue_index]['lstm'] = np.squeeze(lstm_state_all[ue_index, :])
+                history[env.time_count - 1][ue_index]['action'] = action_all[ue_index]
+                history[env.time_count - 1][ue_index]['observation_'] = observation_all_[ue_index]
+                history[env.time_count - 1][ue_index]['lstm_'] = np.squeeze(lstm_state_all_[ue_index,:])
 
-                update_index = np.where((1 - reward_indicator[:,ue_index]) *env.process_delay[:,ue_index] > 0)[0]
+                update_index = np.where((1 - reward_indicator[:,ue_index]) * env.process_delay[:,ue_index] > 0)[0]
+
+
                 if len(update_index) != 0:
                     for time_index in update_index:
                         reward = QoE_Function(
@@ -365,9 +398,12 @@ def train(ue_RL_list, NUM_EPISODE):
 
                 # Print results
 
+                
+
+
                 print("SystemPerformance: ---------------------------------------------------------------------")
                 print("Num_Completed :  ", complete_task)
-                print("Num_Dropped   :  ", drop_task)
+                print("Num_Dropped   :  ", drop_task, "Sum_Drop: ", env.drop_trans_count+env.drop_edge_count+env.drop_ue_count)
                 print("Avg_Delay     :  ", avg_delay)
                 print("Avg_Energy    :  ", avg_energy)
                 print("Avg_QoE       :  ", avg_QoE)
@@ -377,8 +413,12 @@ def train(ue_RL_list, NUM_EPISODE):
                 print("Edges         :  ", "edge_bit_processed :", int(sum(edge_bit_processed)), "|  edge_comp_energy:".ljust(15), int(sum(edge_comp_energy)), "|  ue_idle_energy:", sum(ue_idle_energy))
                 #print("--------------------------------------------------------------------------------------------------------")
 
+                print(env.drop_trans_count)
+                print(env.drop_edge_count)
+                print(env.drop_ue_count, "?")
+                print("Sum_Drop: ", env.drop_trans_count+env.drop_edge_count+env.drop_ue_count)
     
-
+                Drop_Count(ue_RL_list, episode)
 
                 break # Training Finished
 
