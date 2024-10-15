@@ -25,7 +25,7 @@ def normalize(parameter, minimum, maximum):
 
 
 
-def reward_fun(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy, delay, max_delay, unfinish_task, ue_energy_state):
+def QoE_Function(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy, delay, max_delay, unfinish_task, ue_energy_state):
     
 
 
@@ -41,25 +41,22 @@ def reward_fun(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy
     scaled_energy = normalize(energy_cons, 0, 20)*10
     Cost = 2 * ((ue_energy_state * delay) + ((1 - ue_energy_state) * scaled_energy))
 
-    print("+_+_+_------------", delay, scaled_energy)
-    print("+_+_+_------------", ue_energy_state , int(delay+ scaled_energy), int(Cost))
+    #print("+_+_+_------------", delay, scaled_energy)
+    #print("+_+_+_------------", ue_energy_state , int(delay+ scaled_energy), int(Cost))
 
 
 
+    Reward = max_delay*5
 
-
-
-
-
-
-
-    penalty     = -max_delay*4
-    if unfinish_task == 1:
-        reward = penalty
+    
+    if delay < max_delay:
+        QoE = Reward - Cost
     else:
-        reward = 0
-    reward = Cost
-    return reward
+        QoE = - Cost
+
+    #print(QoE, -Cost)
+    
+    return QoE
 
 
 
@@ -79,7 +76,7 @@ def Drop_Count(ue_RL_list, episode):
     return drrop
 
 
-def Cal_Cost(ue_RL_list, episode):
+def Cal_QoE(ue_RL_list, episode):
     episode_sum_reward = sum(sum(ue_RL.reward_store[episode]) for ue_RL in ue_RL_list)
     avg_episode_sum_reward = episode_sum_reward / len(ue_RL_list)
     #print(f"reward: {avg_episode_sum_reward}")
@@ -216,7 +213,7 @@ def train(ue_RL_list, NUM_EPISODE):
                 update_index = np.where((1 - reward_indicator[:,ue_index]) *env.process_delay[:,ue_index] > 0)[0]
                 if len(update_index) != 0:
                     for time_index in update_index:
-                        reward = reward_fun(
+                        reward = QoE_Function(
                             env.ue_comp_energy[time_index, ue_index],
                             env.ue_tran_energy [time_index, ue_index],
                             env.edge_comp_energy[time_index, ue_index],
@@ -276,7 +273,7 @@ def train(ue_RL_list, NUM_EPISODE):
                             f.write('\n' + str(Cal_Energy(ue_RL_list, episode)))
 
                 with open("reward.txt", 'a') as f:
-                            f.write('\n' + str(Cal_Cost(ue_RL_list, episode)))
+                            f.write('\n' + str(Cal_QoE(ue_RL_list, episode)))
 
 
 
@@ -318,7 +315,7 @@ def train(ue_RL_list, NUM_EPISODE):
                     for ue in range(env.n_ue):
                         ue_RL_list[ue].saver.save(ue_RL_list[ue].sess, "models/" + str(episode) +'/'+ str(ue) + "_X_model" +'/model.ckpt', global_step=episode)
 
-                avg_reward_list.append(-(Cal_Cost(ue_RL_list, episode)))
+                avg_reward_list.append(-(Cal_QoE(ue_RL_list, episode)))
                 if episode % 10 == 0:
                     avg_reward_list_2.append(sum(avg_reward_list[episode-10:episode])/10)
                     avg_delay_list_in_episode.append(Cal_Delay(ue_RL_list, episode))
@@ -363,7 +360,7 @@ def train(ue_RL_list, NUM_EPISODE):
 
                 avg_delay  = Cal_Delay(ue_RL_list, episode)
                 avg_energy = Cal_Energy(ue_RL_list, episode)
-                avg_cost   = Cal_Cost(ue_RL_list, episode)
+                avg_QoE   = Cal_QoE(ue_RL_list, episode)
                 #avg_QoE    = Cal_QoE(ue_RL_list, episode)
 
                 # Print results
@@ -373,8 +370,7 @@ def train(ue_RL_list, NUM_EPISODE):
                 print("Num_Dropped   :  ", drop_task)
                 print("Avg_Delay     :  ", avg_delay)
                 print("Avg_Energy    :  ", avg_energy)
-                print("Avg_Cost      :  ", avg_cost)
-                print("Avg_QoE       :  ", )
+                print("Avg_QoE       :  ", avg_QoE)
                 print("EnergyCosumption: ----------------------------------------------------------------------")
                 print("Local         :  ", "ue_bit_processed:", int(ue_bit_processed),        "|  ue_comp_energy:".ljust(15), ue_comp_energy)
                 print("Trans         :  ", "ue_bit_transmitted:", int(ue_bit_transmitted),      "|  ue_tran_energy:".ljust(15), ue_tran_energy)

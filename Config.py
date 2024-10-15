@@ -19,8 +19,8 @@ class Config(object):
     
     #TASK_COMP_DENS   = 0.297
 
-    TASK_MIN_SIZE    = 1
-    TASK_MAX_SIZE    = 7
+    TASK_MIN_SIZE    = 2.5
+    TASK_MAX_SIZE    = 6.5
     N_COMPONENT      = 1                    # Number of Task Partitions
     MAX_DELAY        = 10
 
