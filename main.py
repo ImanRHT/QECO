@@ -1,5 +1,5 @@
 from MEC_Env import MEC
-from D3QN import DuelingDoubleDeepQNetwork
+from RL_brain import DeepQNetwork
 from Config import Config
 import matplotlib.pyplot as plt
 import numpy as np
@@ -25,7 +25,7 @@ def normalize(parameter, minimum, maximum):
 
 
 
-def QoE_Function(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy, delay, max_delay, unfinish_task, ue_energy_state):
+def QoE_Function(delay, max_delay, unfinish_task):
     
 
 
@@ -78,24 +78,18 @@ def QoE_Function(ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_ener
 
 
 def Drop_Count(ue_RL_list, episode):
-    
-
-    print(env.unfinish_task.shape)
+    #print(env.unfinish_task.shape)
     drrop_delay10 = 0 
     drrop = 0
     for time_index in range(100):   
         drrop = drrop + sum(env.unfinish_task[time_index])
-
-
-
 
     for i in range(len(ue_RL_list)):
         for j in range(len(ue_RL_list[i].delay_store[episode])):
             if ue_RL_list[i].delay_store[episode][j] == 10:
                 drrop_delay10 = drrop_delay10+1
 
-
-    print("-----------", drrop_delay10, drrop)
+    #print("-----------", drrop_delay10, drrop)
     return drrop
 
 
@@ -208,6 +202,9 @@ def train(ue_RL_list, NUM_EPISODE):
 
         # INITIALIZE OBSERVATION
         observation_all, lstm_state_all = env.reset(bitarrive_size, bitarrive_dens)
+        #print(observation_all)
+        #print(lstm_state_all)
+
 
         # TRAIN DRL
         while True:
@@ -228,9 +225,58 @@ def train(ue_RL_list, NUM_EPISODE):
             # OBSERVE THE NEXT STATE AND PROCESS DELAY (REWARD)
             observation_all_, lstm_state_all_, done = env.step(action_all)
 
+            #print("+++___+++")
+            #print(observation_all_)
+            #print(lstm_state_all_)
+
+
             # should store this information in EACH time slot
             for ue_index in range(env.n_ue):
                 ue_RL_list[ue_index].update_lstm(lstm_state_all_[ue_index,:])
+
+            process_delay = env.process_delay
+            unfinish_task = env.unfinish_task
+
+            # STORE MEMORY; STORE TRANSITION IF THE TASK PROCESS DELAY IS JUST UPDATED
+            for ue_index in range(env.n_ue):
+
+                history[env.time_count - 1][ue_index]['observation'] = observation_all[ue_index, :]
+                history[env.time_count - 1][ue_index]['lstm'] = np.squeeze(lstm_state_all[ue_index, :])
+                history[env.time_count - 1][ue_index]['action'] = action_all[ue_index]
+                history[env.time_count - 1][ue_index]['observation_'] = observation_all_[ue_index]
+                history[env.time_count - 1][ue_index]['lstm_'] = np.squeeze(lstm_state_all_[ue_index,:])
+
+                update_index = np.where((1 - reward_indicator[:,ue_index]) * process_delay[:,ue_index] > 0)[0]
+
+                if len(update_index) != 0:
+                    for update_ii in range(len(update_index)):
+                        time_index = update_index[update_ii]
+                        ue_RL_list[ue_index].store_transition(history[time_index][ue_index]['observation'],
+                                                                history[time_index][ue_index]['lstm'],
+                                                                history[time_index][ue_index]['action'],
+                                                                QoE_Function(process_delay[time_index, ue_index],
+                                                                           env.max_delay,
+                                                                           unfinish_task[time_index, ue_index]),
+                                                                history[time_index][ue_index]['observation_'],
+                                                                history[time_index][ue_index]['lstm_'])
+                        ue_RL_list[ue_index].do_store_reward(episode, time_index,
+                                                               QoE_Function(process_delay[time_index, ue_index],
+                                                                          env.max_delay,
+                                                                          unfinish_task[time_index, ue_index]))
+                        ue_RL_list[ue_index].do_store_delay(episode, time_index,
+                                                              process_delay[time_index, ue_index])
+
+                        ue_RL_list[ue_index].do_store_energy(
+                            episode,
+                            time_index,
+                            env.ue_comp_energy[time_index, ue_index],
+                            env.ue_tran_energy [time_index, ue_index],
+                            env.edge_comp_energy[time_index, ue_index],
+                            env.ue_idle_energy[time_index, ue_index])
+
+                        reward_indicator[time_index, ue_index] = 1
+
+            '''
 
             # STORE MEMORY; STORE TRANSITION IF THE TASK PROCESS DELAY IS JUST UPDATED
             for ue_index in range(env.n_ue):
@@ -245,7 +291,7 @@ def train(ue_RL_list, NUM_EPISODE):
 
 
                 if len(update_index) != 0:
-                    for time_index in update_index:
+                    for time_index in range(len(update_index)):
                         reward = QoE_Function(
                             env.ue_comp_energy[time_index, ue_index],
                             env.ue_tran_energy [time_index, ue_index],
@@ -283,7 +329,7 @@ def train(ue_RL_list, NUM_EPISODE):
                             env.ue_idle_energy[time_index, ue_index]
                         )
                         reward_indicator[time_index, ue_index] = 1
-
+            '''
 
             # ADD STEP (one step does not mean one store)
             RL_step += 1
@@ -307,6 +353,9 @@ def train(ue_RL_list, NUM_EPISODE):
 
                 with open("reward.txt", 'a') as f:
                             f.write('\n' + str(Cal_QoE(ue_RL_list, episode)))
+
+                with open("drop.txt", 'a') as f:
+                            f.write('\n' + str(Drop_Count(ue_RL_list, episode)))
 
 
 
@@ -342,11 +391,12 @@ def train(ue_RL_list, NUM_EPISODE):
                 #a = Drop_Count(ue_RL_list, episode)
 
 
-
+                '''
                 if episode % 999 == 0 and episode != 0:
                     os.mkdir("models" + "/" + str(episode))
                     for ue in range(env.n_ue):
                         ue_RL_list[ue].saver.save(ue_RL_list[ue].sess, "models/" + str(episode) +'/'+ str(ue) + "_X_model" +'/model.ckpt', global_step=episode)
+                '''
 
                 avg_reward_list.append(-(Cal_QoE(ue_RL_list, episode)))
                 if episode % 10 == 0:
@@ -416,9 +466,9 @@ def train(ue_RL_list, NUM_EPISODE):
                 print(env.drop_trans_count)
                 print(env.drop_edge_count)
                 print(env.drop_ue_count, "?")
-                print("Sum_Drop: ", env.drop_trans_count+env.drop_edge_count+env.drop_ue_count)
+                print("Trans_Drop: ", env.drop_trans_count, "Edge_Drop: ", env.drop_edge_count, "UE_Drop: ", env.drop_ue_count)
     
-                Drop_Count(ue_RL_list, episode)
+                print("Drop_Count: ",Drop_Count(ue_RL_list, episode))
 
                 break # Training Finished
 
@@ -431,12 +481,12 @@ if __name__ == "__main__":
     # GENERATE MULTIPLE CLASSES FOR RL
     ue_RL_list = list()
     for ue in range(Config.N_UE):
-        ue_RL_list.append(DuelingDoubleDeepQNetwork(env.n_actions, env.n_features, env.n_lstm_state, env.n_time,
+        ue_RL_list.append(DeepQNetwork(env.n_actions, env.n_features, env.n_lstm_state, env.n_time,
                                                     learning_rate       = Config.LEARNING_RATE,
                                                     reward_decay        = Config.REWARD_DECAY,
                                                     e_greedy            = Config.E_GREEDY,
-                                                    replace_target_iter = Config.N_NETWORK_UPDATE,  # each 200 steps, update target net
-                                                    memory_size         = Config.MEMORY_SIZE,  # maximum of memory
+                                                    replace_target_iter = Config.N_NETWORK_UPDATE,  
+                                                    memory_size         = Config.MEMORY_SIZE,  
                                                     ))
 
     # LOAD MODEL
