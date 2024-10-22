@@ -207,7 +207,7 @@ class DuelingDoubleDeepQNetwork:
 
         else:
     
-            if np.random.randint(0,100)>101:
+            if np.random.randint(0,100)>50:
                 action = 0
             else:
                 action = np.random.randint(1, self.n_actions)   

@@ -25,21 +25,13 @@ def normalize(parameter, minimum, maximum):
 
 
 
-def QoE_Function(delay, max_delay, unfinish_task):
+def QoE_Function(delay, max_delay, unfinish_task, ue_energy_state, ue_comp_energy, ue_trans_energy, edge_comp_energy, ue_idle_energy):
     
 
 
 
-    penalty = - max_delay * 4
 
-    if unfinish_task:
-        reward = penalty
-    else:
-        reward = - delay
 
-    return reward
-
-    '''
 
     edge_energy  = next((e for e in edge_comp_energy if e != 0), 0)
     idle_energy = next((e for e in ue_idle_energy if e != 0), 0)
@@ -51,25 +43,26 @@ def QoE_Function(delay, max_delay, unfinish_task):
 
     
     scaled_energy = normalize(energy_cons, 0, 20)*10
-    Cost = 2 * ((ue_energy_state * delay) + ((1 - ue_energy_state) * scaled_energy))
-
-    #print("+_+_+_------------", delay, scaled_energy)
-    #print("+_+_+_------------", ue_energy_state , int(delay+ scaled_energy), int(Cost))
+    cost = 2 * ((ue_energy_state * delay) + ((1 - ue_energy_state) * scaled_energy))
 
 
 
-    Reward = max_delay*3
 
-    
-    if delay < max_delay:
-        QoE = - delay
+
+    Reward = max_delay*4
+
+
+    if unfinish_task:
+        QoE = - cost
     else:
-        QoE = - delay - max_delay*2
+        QoE = Reward - cost
+
+    #print("+_+_+_------------", ue_energy_state, delay, scaled_energy, cost, QoE)
 
     #print(QoE, -Cost)
     
     return QoE
-    '''
+ 
 
 
 #def QoE_Function(): 
@@ -255,14 +248,24 @@ def train(ue_RL_list, NUM_EPISODE):
                                                                 history[time_index][ue_index]['lstm'],
                                                                 history[time_index][ue_index]['action'],
                                                                 QoE_Function(process_delay[time_index, ue_index],
-                                                                           env.max_delay,
-                                                                           unfinish_task[time_index, ue_index]),
+                                                                                env.max_delay,
+                                                                                unfinish_task[time_index, ue_index],
+                                                                                env.ue_energy_state[ue_index],
+                                                                                env.ue_comp_energy[time_index, ue_index],
+                                                                                env.ue_tran_energy [time_index, ue_index],
+                                                                                env.edge_comp_energy[time_index, ue_index],
+                                                                                env.ue_idle_energy[time_index, ue_index]),
                                                                 history[time_index][ue_index]['observation_'],
                                                                 history[time_index][ue_index]['lstm_'])
                         ue_RL_list[ue_index].do_store_reward(episode, time_index,
                                                                QoE_Function(process_delay[time_index, ue_index],
-                                                                          env.max_delay,
-                                                                          unfinish_task[time_index, ue_index]))
+                                                                                env.max_delay,
+                                                                                unfinish_task[time_index, ue_index],
+                                                                                env.ue_energy_state[ue_index],
+                                                                                env.ue_comp_energy[time_index, ue_index],
+                                                                                env.ue_tran_energy [time_index, ue_index],
+                                                                                env.edge_comp_energy[time_index, ue_index],
+                                                                                env.ue_idle_energy[time_index, ue_index]))
                         ue_RL_list[ue_index].do_store_delay(episode, time_index,
                                                               process_delay[time_index, ue_index])
 
