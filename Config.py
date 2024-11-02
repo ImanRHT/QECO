@@ -15,13 +15,13 @@ class Config(object):
     EDGE_COMP_ENERGY = 5                    # Computation Power of Edge Server
 
     # Task Requrement
-    TASK_COMP_DENS   = [0.297]      # Task Computation Density
+    TASK_COMP_DENS   = [0.197, 0.297, 0.397]      # Task Computation Density
     
     #TASK_COMP_DENS   = 0.297
 
 
-    TASK_MIN_SIZE    = 2
-    TASK_MAX_SIZE    = 5
+    TASK_MIN_SIZE    = 1
+    TASK_MAX_SIZE    = 7
     N_COMPONENT      = 1                    # Number of Task Partitions
     MAX_DELAY        = 10
 

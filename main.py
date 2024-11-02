@@ -1,5 +1,5 @@
 from MEC_Env import MEC
-from RL_brain import DeepQNetwork
+from D3QN import DuelingDoubleDeepQNetwork
 from Config import Config
 import matplotlib.pyplot as plt
 import numpy as np
@@ -110,7 +110,6 @@ def Cal_Energy(ue_RL_list, episode):
     return avg_energy_in_episode
 
 '''
-
 def cal_reward(ue_RL_list):
     total_sum_reward = 0
     num_episodes = 0
@@ -484,7 +483,7 @@ if __name__ == "__main__":
     # GENERATE MULTIPLE CLASSES FOR RL
     ue_RL_list = list()
     for ue in range(Config.N_UE):
-        ue_RL_list.append(DeepQNetwork(env.n_actions, env.n_features, env.n_lstm_state, env.n_time,
+        ue_RL_list.append(DuelingDoubleDeepQNetwork(env.n_actions, env.n_features, env.n_lstm_state, env.n_time,
                                                     learning_rate       = Config.LEARNING_RATE,
                                                     reward_decay        = Config.REWARD_DECAY,
                                                     e_greedy            = Config.E_GREEDY,

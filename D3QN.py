@@ -1,29 +1,28 @@
 import numpy as np
 import tensorflow as tf
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from collections import deque
 from tensorflow.python.framework import ops
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
-
 class DuelingDoubleDeepQNetwork:
 
     def __init__(self,
-                 n_actions,                  # the number of actions
+                 n_actions,               
                  n_features,
                  n_lstm_features,
                  n_time,
                  learning_rate = 0.01,
                  reward_decay = 0.9,
                  e_greedy = 0.99,
-                 replace_target_iter = 200,  # each 200 steps, update target net
-                 memory_size = 500,  # maximum of memory
+                 replace_target_iter = 200,  
+                 memory_size = 500,  
                  batch_size=32,
                  e_greedy_increment= 0.00025,
                  n_lstm_step = 10,
                  dueling = True,
                  double_q = True,
-                 hidden_units_l1 = 20,
+                 N_L1 = 20,
                  N_lstm = 20):
 
         self.n_actions = n_actions
@@ -40,7 +39,7 @@ class DuelingDoubleDeepQNetwork:
         self.dueling = dueling
         self.double_q = double_q
         self.learn_step_counter = 0
-        self.hidden_units_l1 = hidden_units_l1
+        self.N_L1 = N_L1
 
         # lstm
         self.N_lstm = N_lstm
@@ -74,19 +73,14 @@ class DuelingDoubleDeepQNetwork:
 
         self.store_q_value = list()
 
-
-        self.saver = tf.train.Saver(var_list=tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES))
-
-
     def _build_net(self):
 
         tf.reset_default_graph()
 
-        def build_layers(s,lstm_s,c_names, hidden_units_l1, n_lstm, w_initializer, b_initializer):
+        def build_layers(s,lstm_s,c_names, n_l1, n_lstm, w_initializer, b_initializer):
 
             # lstm for load levels
             with tf.variable_scope('l0'):
-
                 lstm_dnn = tf.compat.v1.nn.rnn_cell.BasicLSTMCell(n_lstm)
                 lstm_dnn.zero_state(self.batch_size, tf.float32)
                 lstm_output,lstm_state = tf.nn.dynamic_rnn(lstm_dnn, lstm_s, dtype=tf.float32)
@@ -94,29 +88,29 @@ class DuelingDoubleDeepQNetwork:
 
             # first layer
             with tf.variable_scope('l1'):
-                w1 = tf.get_variable('w1',[n_lstm + self.n_features, hidden_units_l1], initializer=w_initializer,
+                w1 = tf.get_variable('w1',[n_lstm + self.n_features, n_l1], initializer=w_initializer,
                                      collections=c_names)
-                b1 = tf.get_variable('b1',[1,hidden_units_l1],initializer=b_initializer, collections=c_names)
+                b1 = tf.get_variable('b1',[1,n_l1],initializer=b_initializer, collections=c_names)
                 l1 = tf.nn.relu(tf.matmul(tf.concat([lstm_output_reduced, s],1), w1) + b1)
 
             # second layer
             with tf.variable_scope('l12'):
-                w12 = tf.get_variable('w12', [hidden_units_l1, hidden_units_l1], initializer=w_initializer,
+                w12 = tf.get_variable('w12', [n_l1, n_l1], initializer=w_initializer,
                                          collections=c_names)
-                b12 = tf.get_variable('b12', [1, hidden_units_l1], initializer=b_initializer, collections=c_names)
+                b12 = tf.get_variable('b12', [1, n_l1], initializer=b_initializer, collections=c_names)
                 l12 = tf.nn.relu(tf.matmul(l1, w12) + b12)
 
             # the second layer is different
             if self.dueling:
                 # Dueling DQN
-                # a single output hidden_units_l1 -> 1
+                # a single output n_l1 -> 1
                 with tf.variable_scope('Value'):
-                    w2 = tf.get_variable('w2',[hidden_units_l1,1],initializer=w_initializer,collections=c_names)
+                    w2 = tf.get_variable('w2',[n_l1,1],initializer=w_initializer,collections=c_names)
                     b2 = tf.get_variable('b2',[1,1],initializer=b_initializer,collections=c_names)
                     self.V = tf.matmul(l12,w2) + b2
-                # hidden_units_l1 -> n_actions
+                # n_l1 -> n_actions
                 with tf.variable_scope('Advantage'):
-                    w2 = tf.get_variable('w2',[hidden_units_l1,self.n_actions],initializer=w_initializer,collections=c_names)
+                    w2 = tf.get_variable('w2',[n_l1,self.n_actions],initializer=w_initializer,collections=c_names)
                     b2 = tf.get_variable('b2',[1,self.n_actions],initializer=b_initializer,collections=c_names)
                     self.A = tf.matmul(l12,w2) + b2
 
@@ -125,7 +119,7 @@ class DuelingDoubleDeepQNetwork:
 
             else:
                 with tf.variable_scope('Q'):
-                    w2 = tf.get_variable('w2', [hidden_units_l1, self.n_actions], initializer=w_initializer, collections=c_names)
+                    w2 = tf.get_variable('w2', [n_l1, self.n_actions], initializer=w_initializer, collections=c_names)
                     b2 = tf.get_variable('b2', [1, self.n_actions], initializer=b_initializer, collections=c_names)
                     out = tf.matmul(l1, w2) + b2
 
@@ -146,18 +140,18 @@ class DuelingDoubleDeepQNetwork:
 
             # c_names(collections_names), will be used when update target_net
             # tf.random_normal_initializer(mean=0.0, stddev=1.0, seed=None, dtype=tf.float32), return a initializer
-            c_names, hidden_units_l1, n_lstm, w_initializer, b_initializer =  \
-                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], self.hidden_units_l1, self.N_lstm,\
+            c_names, n_l1, n_lstm, w_initializer, b_initializer =  \
+                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], self.N_L1, self.N_lstm,\
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
-            # input (n_feature) -> l1 (hidden_units_l1) -> l2 (n_actions)
-            self.q_eval = build_layers(self.s, self.lstm_s, c_names, hidden_units_l1, n_lstm, w_initializer, b_initializer)
+            # input (n_feature) -> l1 (n_l1) -> l2 (n_actions)
+            self.q_eval = build_layers(self.s, self.lstm_s, c_names, n_l1, n_lstm, w_initializer, b_initializer)
 
         # generate TARGET_NET
         with tf.variable_scope('target_net'):
             c_names = ['target_net_params', tf.GraphKeys.GLOBAL_VARIABLES]
 
-            self.q_next = build_layers(self.s_, self.lstm_s_, c_names, hidden_units_l1, n_lstm, w_initializer, b_initializer)
+            self.q_next = build_layers(self.s_, self.lstm_s_, c_names, n_l1, n_lstm, w_initializer, b_initializer)
 
         # loss and train
         with tf.variable_scope('loss'):
@@ -187,7 +181,6 @@ class DuelingDoubleDeepQNetwork:
     def choose_action(self, observation):
         # the shape of the observation (1, size_of_observation)
         # x1 = np.array([1, 2, 3, 4, 5]), x1_new = x1[np.newaxis, :], now, the shape of x1_new is (1, 5)
-        
         observation = observation[np.newaxis, :]
 
         if np.random.uniform() < self.epsilon:
@@ -206,19 +199,11 @@ class DuelingDoubleDeepQNetwork:
             action = np.argmax(actions_value)
 
         else:
-    
-            if np.random.randint(0,100)>50:
+            if np.random.randint(0,100)>101:
                 action = 0
             else:
                 action = np.random.randint(1, self.n_actions)   
-        
-        
-        
         return action
-
-
-
-
 
     def learn(self):
 
@@ -226,7 +211,7 @@ class DuelingDoubleDeepQNetwork:
         if self.learn_step_counter % self.replace_target_iter == 0:
             # run the self.replace_target_op in __int__
             self.sess.run(self.replace_target_op)
-            print('\ntarget_params_replaced')
+            print('\ntarget_params_replaced\n')
 
         # randomly pick [batch_size] memory from memory np.hstack((s, [a, r], s_, lstm_s, lstm_s_))
         if self.memory_counter > self.memory_size:
@@ -287,6 +272,8 @@ class DuelingDoubleDeepQNetwork:
         self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
         self.learn_step_counter += 1
 
+        return self.cost
+
     def do_store_reward(self, episode, time, reward):
         while episode >= len(self.reward_store):
             self.reward_store.append(np.zeros([self.n_time]))
@@ -302,8 +289,9 @@ class DuelingDoubleDeepQNetwork:
             self.delay_store.append(np.zeros([self.n_time]))
         self.delay_store[episode][time] = delay
 
-    def do_store_energy(self, episode, time, energy, energy2, energy3, energy4):
 
+    def do_store_energy(self, episode, time, energy, energy2, energy3, energy4):
+    
         fog_energy = 0
         for i in range(len(energy3)):
             if energy3[i] != 0:
@@ -319,17 +307,3 @@ class DuelingDoubleDeepQNetwork:
             self.energy_store.append(np.zeros([self.n_time]))
         self.energy_store[episode][time] = energy + energy2 + fog_energy + idle_energy
 
-
-
-    def Initialize(self,sess,iot):
-        self.sess = sess
-        #self.sess.run(tf.global_variables_initializer())
-        self.load_model(iot)
-
-
-    def load_model(self,iot):
-        latest_ckpt = tf.train.latest_checkpoint("./models/500/"+str(iot)+"_X_model")
-
-        print(latest_ckpt, "_____+______________________________________________")
-        if latest_ckpt is not None:
-            self.saver.restore(self.sess, latest_ckpt)
