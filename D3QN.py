@@ -80,7 +80,7 @@ class DuelingDoubleDeepQNetwork:
 
     def _build_net(self):
 
-        ops.reset_default_graph()
+        tf.reset_default_graph()
 
         def build_layers(s,lstm_s,c_names, hidden_units_l1, n_lstm, w_initializer, b_initializer):
 
@@ -206,12 +206,12 @@ class DuelingDoubleDeepQNetwork:
             action = np.argmax(actions_value)
 
         else:
-        
-
-            if np.random.randint(0,100) < 25:
-                action = np.random.randint(1, self.n_actions)   
-            else: 
+    
+            if np.random.randint(0,100)>50:
                 action = 0
+            else:
+                action = np.random.randint(1, self.n_actions)   
+        
         
         
         return action
