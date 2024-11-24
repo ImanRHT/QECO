@@ -67,20 +67,14 @@ Start by forking the repository to your GitHub account.
 - **Create a new branch**
    
 Create a branch for your feature or fix. Use a descriptive branch name:
-  
-        ```bash
-        git checkout -b feature/my-new-feature
-        ```
- - **Commit your changes**
-   
-Make and commit your changes with a clear and concise commit message:
-   
-       ```sh
-       git commit -am "Add [description of your feature or fix]"
-       ```  
+```sh
+git checkout -b feature/my-new-feature
+```
+ - **Commit your changes**   
+```sh
+git commit -am "Add [description of your feature or fix]"
+```  
  - **Push your branch**
-   
-Push the branch to your forked repository:
 ```sh
   git push origin feature/my-new-feature
 ```
