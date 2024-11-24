@@ -66,7 +66,31 @@ Make sure you have the following packages installed:
 
 - L. Yang, H. Zhang, X. Li, H. Ji, and V. C. Leung, “[A distributed computation offloading strategy in small-cell networks integrated with mobile edge computing](https://ieeexplore.ieee.org/document/8519737)”, IEEE/ACM Transactions on Networking, Dec 2018.
 
+## Contributing  
 
-## Contribute
-If you have an issue or found a bug, please raise a GitHub issue [here](https://github.com/ImanRht/QOCO/issues). Pull requests are also welcome.
+We’re excited to have you contribute to QECO! Whether you have ideas for improvements, have identified a bug, or want to add new features, your input is welcome.  
+
+### How to Contribute  
+
+1. **Report Issues**  
+   - Found a bug? Have a feature request? Open a [GitHub issue](https://github.com/ImanRht/QOCO/issues) and let us know!  
+
+2. **Submit Code Contributions**  
+   - Follow these steps to submit a pull request:  
+     - **Fork the repository**  
+     - **Create a new branch** for your changes:  
+       ```bash
+       git checkout -b feature/my-new-feature
+       ```  
+     - **Make your changes** and write a clear commit message:  
+       ```bash
+       git commit -am "Add [description of your feature or fix]"
+       ```  
+     - **Push your branch** to your fork:  
+       ```bash
+       git push origin feature/my-new-feature
+       ```  
+     - **Open a Pull Request**  
+       - Go to the original repository and create a pull request. Provide a description of your changes and the rationale behind them.  
+
 
