@@ -62,32 +62,31 @@ If you have an idea for an enhancement or have found a bug, you can raise a GitH
 
 - **Fork the repository**
    
-       Start by forking the repository to your GitHub account.
+Start by forking the repository to your GitHub account.
 
 - **Create a new branch**
    
-       Create a branch for your feature or fix. Use a descriptive branch name:
+Create a branch for your feature or fix. Use a descriptive branch name:
   
         ```bash
         git checkout -b feature/my-new-feature
         ```
  - **Commit your changes**
    
-     Make and commit your changes with a clear and concise commit message:
+Make and commit your changes with a clear and concise commit message:
    
        ```sh
        git commit -am "Add [description of your feature or fix]"
        ```  
  - **Push your branch**
    
-     Push the branch to your forked repository:
-   
-       ```sh
-        git push origin feature/my-new-feature
-       ```
+Push the branch to your forked repository:
+```sh
+  git push origin feature/my-new-feature
+```
  - **Open a Pull Request**
    
-       Go to the original repository and create a pull request. Provide a description of your changes and the rationale behind them.  
+Go to the original repository and create a pull request. Provide a description of your changes and the rationale behind them.  
 
 
 
