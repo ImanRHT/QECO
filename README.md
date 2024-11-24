@@ -67,30 +67,26 @@ Make sure you have the following packages installed:
 - L. Yang, H. Zhang, X. Li, H. Ji, and V. C. Leung, “[A distributed computation offloading strategy in small-cell networks integrated with mobile edge computing](https://ieeexplore.ieee.org/document/8519737)”, IEEE/ACM Transactions on Networking, Dec 2018.
 
 ## Contributing  
+If you have an idea for an enhancement or have found a bug, you can raise a GitHub issue [here](https://github.com/ImanRht/QOCO/issues). Pull requests are also welcome, you can follow these steps to contribute:
 
-We’re excited to have you contribute to QECO! Whether you have ideas for improvements, have identified a bug, or want to add new features, your input is welcome.  
+- **Fork the repository**  
+       Start by forking the repository to your GitHub account.
 
-### How to Contribute  
-
-1. **Report Issues**  
-   - Found a bug? Have a feature request? Open a [GitHub issue](https://github.com/ImanRht/QOCO/issues) and let us know!  
-
-2. **Submit Code Contributions**  
-   - Follow these steps to submit a pull request:  
-     - **Fork the repository**  
-     - **Create a new branch** for your changes:  
+- **Create a new branch**  
+       Create a branch for your feature or fix. Use a descriptive branch name:
+   
        ```bash
        git checkout -b feature/my-new-feature
        ```  
-     - **Make your changes** and write a clear commit message:  
+ - **Make your changes** and write a clear commit message:  
        ```bash
        git commit -am "Add [description of your feature or fix]"
        ```  
-     - **Push your branch** to your fork:  
+ - **Push your branch** to your fork:  
        ```bash
        git push origin feature/my-new-feature
        ```  
-     - **Open a Pull Request**  
+ - **Open a Pull Request**  
        - Go to the original repository and create a pull request. Provide a description of your changes and the rationale behind them.  
 
 
