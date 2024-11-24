@@ -76,7 +76,7 @@ git commit -am "Add [description of your feature or fix]"
 ```  
  - **Push your branch**
 ```sh
-  git push origin feature/my-new-feature
+git push origin feature/my-new-feature
 ```
  - **Open a Pull Request**
    
