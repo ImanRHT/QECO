@@ -64,14 +64,19 @@ If you have an idea for an enhancement or have found a bug, you can raise a GitH
 
 - **Create a new branch**  
        Create a branch for your feature or fix. Use a descriptive branch name:
-        ```sh
+  
+        ```bash
         git checkout -b feature/my-new-feature
         ```
- - **Make your changes** and write a clear commit message:
+ - **Commit your changes**
+     Make and commit your changes with a clear and concise commit message:
+   
        ```sh
        git commit -am "Add [description of your feature or fix]"
        ```  
  - **Push your branch** to your fork:
+     Push the branch to your forked repository:
+   
        ```sh
         git push origin feature/my-new-feature
        ```
