@@ -56,32 +56,11 @@ Make sure you have the following packages installed:
 - matplotlib
 
 
+
+
 ## Contributing  
 
 If you have an idea for an enhancement or have found a bug, you can raise a GitHub issue [here](https://github.com/ImanRht/QOCO/issues). Pull requests are also welcome, you can follow these steps to contribute:
-
-- **Fork the repository**
-   
-Start by forking the repository to your GitHub account.
-
-- **Create a new branch**
-   
-Create a branch for your feature or fix. Use a descriptive branch name:
-```sh
-git checkout -b feature/my-new-feature
-```
- - **Commit your changes**   
-```sh
-git commit -am "Add [description of your feature or fix]"
-```  
- - **Push your branch**
-```sh
-git push origin feature/my-new-feature
-```
- - **Open a Pull Request**
-   
-Go to the original repository and create a pull request. Provide a description of your changes and the rationale behind them.  
-
 
 
 
