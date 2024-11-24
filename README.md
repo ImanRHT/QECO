@@ -56,6 +56,32 @@ Make sure you have the following packages installed:
 - matplotlib
 
 
+## Contributing  
+If you have an idea for an enhancement or have found a bug, you can raise a GitHub issue [here](https://github.com/ImanRht/QOCO/issues). Pull requests are also welcome, you can follow these steps to contribute:
+
+- **Fork the repository**  
+       Start by forking the repository to your GitHub account.
+
+- **Create a new branch**  
+       Create a branch for your feature or fix. Use a descriptive branch name:
+  
+        ```sh
+        git checkout -b feature/my-new-feature
+        ```
+ - **Make your changes** and write a clear commit message:
+   
+       ```bash
+       git commit -am "Add [description of your feature or fix]"
+       ```  
+ - **Push your branch** to your fork:
+   
+        ```sh
+        git push origin feature/my-new-feature
+       ```
+ - **Open a Pull Request**  
+       - Go to the original repository and create a pull request. Provide a description of your changes and the rationale behind them.  
+
+
 ## Primary References
 
 - H. Shah-Mansouri and V. W. Wong, “[Hierarchical fog-cloud computing for iot systems: A computation offloading game](https://ieeexplore.ieee.org/document/8360511)", IEEE Internet of Things Journal, May 2018.
@@ -65,28 +91,4 @@ Make sure you have the following packages installed:
 - H. Zhou, K. Jiang, X. Liu, X. Li, and V. C. Leung, “[Deep reinforcement learning for energy-efficient computation offloading in mobile-edge computing](https://ieeexplore.ieee.org/document/9462445)”, IEEE Internet of Things Journal, Jun 2021.
 
 - L. Yang, H. Zhang, X. Li, H. Ji, and V. C. Leung, “[A distributed computation offloading strategy in small-cell networks integrated with mobile edge computing](https://ieeexplore.ieee.org/document/8519737)”, IEEE/ACM Transactions on Networking, Dec 2018.
-
-## Contributing  
-If you have an idea for an enhancement or have found a bug, you can raise a GitHub issue [here](https://github.com/ImanRht/QOCO/issues). Pull requests are also welcome, you can follow these steps to contribute:
-
-- **Fork the repository**  
-       Start by forking the repository to your GitHub account.
-
-- **Create a new branch**  
-       Create a branch for your feature or fix. Use a descriptive branch name:
-   
-       ```bash
-       git checkout -b feature/my-new-feature
-       ```  
- - **Make your changes** and write a clear commit message:  
-       ```bash
-       git commit -am "Add [description of your feature or fix]"
-       ```  
- - **Push your branch** to your fork:  
-       ```bash
-       git push origin feature/my-new-feature
-       ```  
- - **Open a Pull Request**  
-       - Go to the original repository and create a pull request. Provide a description of your changes and the rationale behind them.  
-
 
