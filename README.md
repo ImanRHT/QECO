@@ -54,6 +54,17 @@ Make sure you have the following packages installed:
 - numpy
 - matplotlib
 
+## Quick Start
+
+1. Clone the repository:
+
+``` bash
+   git clone https://github.com/ImanRHT/QECO.git
+    cd QECO
+```
+
+3. 
+
 ## Contributing  
 
 If you have an idea for an enhancement or have found a bug, you can raise a GitHub issue [here](https://github.com/ImanRht/QOCO/issues). Pull requests are also welcome, you can follow these steps to contribute:
