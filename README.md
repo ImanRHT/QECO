@@ -60,10 +60,18 @@ Make sure you have the following packages installed:
 
 ``` bash
    git clone https://github.com/ImanRHT/QECO.git
-    cd QECO
+   cd QECO
 ```
 
-3. 
+2. Configure the MEC environment in [Config.py](Config.py).
+
+
+3. Run the training script:
+
+``` bash
+   python main.py
+```
+
 
 ## Contributing  
 
