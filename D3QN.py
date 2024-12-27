@@ -73,6 +73,8 @@ class DuelingDoubleDeepQNetwork:
 
         self.store_q_value = list()
 
+        self.saver = tf.train.Saver(var_list=tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES))
+
     def _build_net(self):
 
         tf.reset_default_graph()
@@ -211,7 +213,7 @@ class DuelingDoubleDeepQNetwork:
         if self.learn_step_counter % self.replace_target_iter == 0:
             # run the self.replace_target_op in __int__
             self.sess.run(self.replace_target_op)
-            print('\ntarget_params_replaced\n')
+            print('Network_parameter_updated\n')
 
         # randomly pick [batch_size] memory from memory np.hstack((s, [a, r], s_, lstm_s, lstm_s_))
         if self.memory_counter > self.memory_size:
@@ -307,3 +309,9 @@ class DuelingDoubleDeepQNetwork:
             self.energy_store.append(np.zeros([self.n_time]))
         self.energy_store[episode][time] = energy + energy2 + fog_energy + idle_energy
 
+    def load_model(self,iot):
+        latest_ckpt = tf.train.latest_checkpoint("500-"+str(iot)+"_model")
+
+        print(latest_ckpt, "_____+______________________________________________")
+        if latest_ckpt is not None:
+            self.saver.restore(self.sess, latest_ckpt)

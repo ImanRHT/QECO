@@ -1,8 +1,8 @@
 class Config(object):
     
     # System setup
-    N_UE             = 50                   # Number of Mobile Devices
-    N_EDGE           = 5                   # Number of Edge Servers
+    N_UE             = 20                  # Number of Mobile Devices
+    N_EDGE           = 2                   # Number of Edge Servers
     UE_COMP_CAP      = 2.5                  # Mobile Device Computation Capacity
     UE_TRAN_CAP      = 14                   # Mobile Device Transmission Capacity
     EDGE_COMP_CAP    = 41.8                 # Edge Servers Computation Capacity
