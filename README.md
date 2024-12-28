@@ -49,7 +49,11 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 
 ## Performance Evaluation
 
-![Performance_Chart](/Performance_Chart__.png "Performance_Chart")
+![Convergence](/Convergence.png "Convergence_Charts")
+
+![Results](/Results.png "Results_Charts")
+
+![Performance_Chart](/Performance_Chart__.png "Performance_Charts")
 
 ### Benchmarks:
 
