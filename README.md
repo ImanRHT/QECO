@@ -41,6 +41,8 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 
 ## System Model
 
+![Qeueing architecture](/System_Model.png "Qeueing architecture")
+
 ## D3QN Networ Model
 
 ![D3QN architecture](/D3QN_Model.png "D3QN architecture")
