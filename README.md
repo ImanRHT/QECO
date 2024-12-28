@@ -17,9 +17,6 @@ This repository contains the Python code for reproducing the decentralized QECO 
 
 QECO is designed to balance and prioritize QoE factors based on individual mobile device requirements while considering the dynamic workloads at the edge nodes. The QECO algorithm captures the dynamics of the MEC environment by integrating the Dueling **Double Deep Q-Network (D3QN)** model with Long **Short-Term Memory (LSTM)** networks. This algorithm address the QoE maximization problem by efficiently utilizing resources from both MDs and ENs.
 
-<p align="center">
-<img height="300em" src="/assets/D3QN_Model.png"  
-</p>
   
 - **D3QN**: By integrating both double Q-learning and dueling network architectures, D3QN overcomes overestimation bias in action-value predictions and accurately identifies the relative importance of states and actions. This improves the model’s ability to make accurate predictions, providing a foundation for enhanced offloading strategies.
 
@@ -27,11 +24,16 @@ QECO is designed to balance and prioritize QoE factors based on individual mobil
 
 
 
+<p align="center">
+<img height="360em" src="/assets/D3QN_Model.png"  
+</p>
+
+
 
 ## System Model
 
 <p align="center">
-<img height="220em" src="/assets/System_Model.png"  
+<img height="190em" src="/assets/System_Model.png"  
 </p>
 
 ## Cite this Work
