@@ -309,8 +309,14 @@ class DuelingDoubleDeepQNetwork:
             self.energy_store.append(np.zeros([self.n_time]))
         self.energy_store[episode][time] = energy + energy2 + fog_energy + idle_energy
 
+    def Initialize(self,sess,iot):
+        self.sess = sess
+        #self.sess.run(tf.global_variables_initializer())
+        self.load_model(iot)
+
+
     def load_model(self,iot):
-        latest_ckpt = tf.train.latest_checkpoint("500-"+str(iot)+"_model")
+        latest_ckpt = tf.train.latest_checkpoint("./models/400/"+str(iot)+"_X_model")
 
         print(latest_ckpt, "_____+______________________________________________")
         if latest_ckpt is not None:

@@ -28,7 +28,7 @@ def QoE_Function(delay, max_delay, unfinish_task, ue_energy_state, ue_comp_energ
     edge_energy  = next((e for e in edge_comp_energy if e != 0), 0)
     idle_energy = next((e for e in ue_idle_energy if e != 0), 0)
 
-    energy_cons = ue_comp_energy + ue_trans_energy + edge_energy + idle_energy
+    energy_cons = ue_comp_energy + ue_trans_energy #+ edge_energy + idle_energy
     #print(ue_comp_energy , ue_trans_energy , edge_energy , idle_energy)
     #print(ue_energy_state, delay, energy_cons)
     
@@ -378,8 +378,14 @@ def train(ue_RL_list, NUM_EPISODE):
                     os.mkdir("models" + "/" + str(episode))
                     for ue in range(env.n_ue):
                         ue_RL_list[ue].saver.save(ue_RL_list[ue].sess, "models/" + str(episode) +'/'+ str(ue) + "_X_model" +'/model.ckpt', global_step=episode)
-                        print("UE", ue, "network_model_seved\n")
+                        print("UE", ue, "Network_model_seved\n")
                 
+                
+                if episode % 999 == 0 and episode != 0:
+                    os.mkdir("models" + "/" + str(episode))
+                    for ue in range(env.n_ue):
+                        ue_RL_list[ue].saver.save(ue_RL_list[ue].sess, "models/" + str(episode) +'/'+ str(ue) + "_X_model" +'/model.ckpt', global_step=episode)
+                        print("UE", ue, "Network_model_seved\n")
 
 
                     
@@ -426,7 +432,7 @@ def train(ue_RL_list, NUM_EPISODE):
 
                     # Subplot for Average QoE
                     axs[0].plot(avg_QoE_list, marker='o', linestyle='-', color='b', label='Avg QoE')
-                    axs[0].set_title('', fontsize=12)
+                    axs[0].set_title('', fontsize=14)
                     axs[0].set_ylabel('Average QoE')
                     axs[0].set_xlabel('Episode')
                     axs[0].grid(True, linestyle='--', alpha=0.7)
@@ -434,7 +440,7 @@ def train(ue_RL_list, NUM_EPISODE):
 
                     # Subplot for Average Delay
                     axs[1].plot(avg_delay_list, marker='s', linestyle='-', color='g', label='Avg Delay')
-                    axs[1].set_title('', fontsize=12)
+                    axs[1].set_title('', fontsize=14)
                     axs[1].set_ylabel('Average Delay')
                     axs[1].set_xlabel('Episode')
                     axs[1].grid(True, linestyle='--', alpha=0.7)
@@ -442,7 +448,7 @@ def train(ue_RL_list, NUM_EPISODE):
 
                     # Subplot for Energy Consumption
                     axs[2].plot(energy_cons_list, marker='^', linestyle='-', color='r', label='Energy Cons.')
-                    axs[2].set_title('', fontsize=12)
+                    axs[2].set_title('', fontsize=14)
                     axs[2].set_ylabel('Energy Consumption')
                     axs[2].set_xlabel('Episode')
                     axs[2].grid(True, linestyle='--', alpha=0.7)
@@ -450,7 +456,7 @@ def train(ue_RL_list, NUM_EPISODE):
 
                     # Subplot for Number of Drops
                     axs[3].plot(num_drop_list, marker='x', linestyle='-', color='m', label='Num Drops')
-                    axs[3].set_title('', fontsize=12)
+                    axs[3].set_title('', fontsize=14)
                     axs[3].set_ylabel('Number Drops')
                     axs[3].set_xlabel('Episode')
                     axs[3].grid(True, linestyle='--', alpha=0.7)
@@ -497,10 +503,13 @@ if __name__ == "__main__":
                                                     memory_size         = Config.MEMORY_SIZE,  
                                                     ))
 
+
+
     # LOAD MODEL
     '''
     for ue in range(Config.N_UE):
         ue_RL_list[ue].Initialize(ue_RL_list[ue].sess, ue)
+        ue_RL_list[ue].epsilon = 1
     '''
 
     Delay  = open("Delay.txt" , 'w')

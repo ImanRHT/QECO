@@ -23,7 +23,7 @@ class MEC:
         self.task_count_ue   = 0
         self.task_count_edge = 0
         self.n_actions       = 1 + self.n_edge
-        self.n_features      = 1 + 1 + 1 + self.n_edge
+        self.n_features      = 1 + 1 + 1 + 1 + self.n_edge
         self.n_lstm_state    = self.n_edge
 
         self.drop_trans_count = 0
@@ -150,7 +150,8 @@ class MEC:
                 UEs_OBS[ue_index, :] = np.hstack([
                     self.arrive_task_size[self.time_count, ue_index], self.t_ue_comp[ue_index],
                     self.t_ue_tran[ue_index],
-                    np.squeeze(self.b_edge_comp[ue_index, :])])
+                    np.squeeze(self.b_edge_comp[ue_index, :]),
+                    self.ue_energy_state[ue_index]])
 
         UEs_lstm_state = np.zeros([self.n_ue, self.n_lstm_state])
 
@@ -550,7 +551,8 @@ class MEC:
                         self.arrive_task_size[self.time_count, ue_index],
                         self.t_ue_comp[ue_index] - self.time_count + 1,
                         self.t_ue_tran[ue_index] - self.time_count + 1,
-                        self.b_edge_comp[ue_index, :]])
+                        self.b_edge_comp[ue_index, :],
+                        self.ue_energy_state[ue_index]])
 
                 UEs_lstm_state_[ue_index, :] = np.hstack(self.edge_ue_m_observe)
 
