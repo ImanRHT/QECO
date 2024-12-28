@@ -17,6 +17,22 @@ QECO is designed to balance and prioritize QoE factors based on individual mobil
 
 - **LSTM**: Incorporating LSTM networks allows the model to continuously estimate dynamic work- loads at edge servers. This is crucial for dealing with limited global information and adapting to the uncertain MEC environment with multiple MDs and ENs. By predicting the future workload of edge servers, MDs can effectively adjust their offloading strategies to achieve higher QoE.
 
+
+### System Model
+
+![Qeueing architecture](/assets/System_Model.png "Qeueing architecture")
+
+### D3QN Network Model
+
+![D3QN architecture](/assets/D3QN_Model.png "D3QN architecture")
+
+### Evaluation
+
+![Performance_Chart](/assets/Performance_Chart__.png "Performance_Charts")
+
+### Benchmarks:
+
+
 ## Contents
 - [main.py](main.py): The main code, including training and testing structures, implemented using [Tensorflow 1.x](https://www.tensorflow.org/install/pip).
 - [MEC_Env.py](MEC_Env.py): Contains the code for the mobile edge computing environment.
@@ -38,20 +54,6 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
   year={2023}
 }
 ```
-
-## System Model
-
-![Qeueing architecture](/assets/System_Model.png "Qeueing architecture")
-
-## D3QN Network Model
-
-![D3QN architecture](/assets/D3QN_Model.png "D3QN architecture")
-
-## Performance Evaluation
-
-![Performance_Chart](/assets/Performance_Chart__.png "Performance_Charts")
-
-### Benchmarks:
 
 ## About Authors
 
