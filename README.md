@@ -48,13 +48,13 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 ## System Model
 
 <div align="center">
-  <img src="/assets/System_Model.png" alt="Qeueing architecture" title="Qeueing architecture" style="max-width:60%; height:auto;"/>
+  <img src="/assets/System_Model.png" alt="Qeueing architecture" title="Qeueing architecture" style="max-width:60%; height:250;"/>
 </div>
 
 ## DQN-based Network Model
 
 <div align="center">
-  <img src="/assets/D3QN_Model.png" alt="D3QN architecture" title="D3QN architecture" style="max-width:60%; height:auto;"/>
+  <img src="/assets/D3QN_Model.png" alt="D3QN architecture" title="D3QN architecture" style="max-width:60%; height:350;"/>
 </div>
 
 
