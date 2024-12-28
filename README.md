@@ -53,12 +53,7 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 
 ## DQN-based Network Model
 
-<img src="/assets/D3QN_Model.png" alt="D3QN architecture" title="D3QN architecture" width="400"/>
-
-
-
-### DQN-based Network Model
-
+<img src="/assets/D3QN_Model.png" alt="D3QN architecture" title="D3QN architecture" width="700"/>
 
 
 
