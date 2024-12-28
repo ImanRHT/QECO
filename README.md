@@ -45,25 +45,17 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 - [DDQN_torch.py](DDQN_torch.py): D3QN implementation using [PyTorch](https://pytorch.org/get-started/locally/).
 - [Config.py](Config.py): Configuration file for MEC entities and neural network setup.
   
-
-
-
-
-
-
-
 ## System Model
 
-<div style="text-align: center;">
-    <img src="/assets/System_Model.png" alt="Qeueing architecture" title="Qeueing architecture" width="200"/>
+<div style="display: flex; justify-content: center; align-items: center;">
+    <img src="/assets/System_Model.png" alt="Qeueing architecture" title="Qeueing architecture" width="300"/>
 </div>
 
 ## DQN-based Network Model
 
-<div style="text-align: center;">
+<div style="display: flex; justify-content: center; align-items: center;">
     <img src="/assets/D3QN_Model.png" alt="D3QN architecture" title="D3QN architecture" width="550"/>
 </div>
-
 
 
 ## Required Packages
