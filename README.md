@@ -39,6 +39,12 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 }
 ```
 
+## System Model
+
+## D3QN Networ Model
+
+![D3QN architecture](/D3QN_Model.png "D3QN architecture")
+
 ## About Authors
 
 - [Iman Rahmati](https://scholar.google.com/citations?user=yHWKp6MAAAAJ&hl=en&oi=sra): Research Assistant in the Computer Science and Engineering Department at SUT.
