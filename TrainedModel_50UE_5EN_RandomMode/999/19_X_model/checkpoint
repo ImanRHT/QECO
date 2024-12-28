@@ -1,0 +1,6 @@
+model_checkpoint_path: "model.ckpt-999"
+all_model_checkpoint_paths: "../../200/19_X_model/model.ckpt-200"
+all_model_checkpoint_paths: "../../400/19_X_model/model.ckpt-400"
+all_model_checkpoint_paths: "../../600/19_X_model/model.ckpt-600"
+all_model_checkpoint_paths: "../../800/19_X_model/model.ckpt-800"
+all_model_checkpoint_paths: "model.ckpt-999"
