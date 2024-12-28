@@ -12,14 +12,23 @@
 This repository contains the Python code for reproducing the decentralized QECO (QoE-Oriented Computation Offloading) algorithm, designed for Mobile Edge Computing (MEC) systems. 
 
 ## Overview
+
+<p align="center">
+<img height="300em" src="/assets/D3QN_Model.png"  
+</p>
+
 QECO is designed to balance and prioritize QoE factors based on individual mobile device requirements while considering the dynamic workloads at the edge nodes. The QECO algorithm captures the dynamics of the MEC environment by integrating the Dueling **Double Deep Q-Network (D3QN)** model with Long **Short-Term Memory (LSTM)** networks. This algorithm address the QoE maximization problem by efficiently utilizing resources from both MDs and ENs.
 - **D3QN**: By integrating both double Q-learning and dueling network architectures, D3QN overcomes overestimation bias in action-value predictions and accurately identifies the relative importance of states and actions. This improves the model’s ability to make accurate predictions, providing a foundation for enhanced offloading strategies.
 
 - **LSTM**: Incorporating LSTM networks allows the model to continuously estimate dynamic work- loads at edge servers. This is crucial for dealing with limited global information and adapting to the uncertain MEC environment with multiple MDs and ENs. By predicting the future workload of edge servers, MDs can effectively adjust their offloading strategies to achieve higher QoE.
 
 
+
+
+## System Model
+
 <p align="center">
-<img height="400em" src="/assets/D3QN_Model.png"  
+<img height="220em" src="/assets/System_Model.png"  
 </p>
 
 ## Cite this Work
@@ -45,16 +54,6 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 - [DDQN_torch.py](DDQN_torch.py): D3QN implementation using [PyTorch](https://pytorch.org/get-started/locally/).
 - [Config.py](Config.py): Configuration file for MEC entities and neural network setup.
   
-
-## System Model
-
-<p align="center">
-<img height="220em" src="/assets/System_Model.png"  
-</p>
-
-### Evaluation
-
-![Performance_Chart](/assets/Performance_Chart__.png "Performance_Charts")
 
 
 ## Required Packages
@@ -83,6 +82,13 @@ Make sure you have the following packages installed:
 ``` bash
    python main.py
 ```
+
+
+
+## Evaluation
+
+![Performance_Chart](/assets/Performance_Chart__.png "Performance_Charts")
+
 
 ## About Authors
 
