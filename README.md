@@ -22,14 +22,14 @@ QECO is designed to balance and prioritize QoE factors based on individual mobil
 
 
 <p align="center">
-<img height="185em" src="/assets/System_Model.png"  
+<img height="200em" src="/assets/System_Model.png"  
 </p>
 
 
 ### D3QN Network Model
 
 <p align="center">
-<img height="185em" src="/assets/D3QN_Model.png"  
+<img height="350em" src="/assets/D3QN_Model.png"  
 </p>
 
 
