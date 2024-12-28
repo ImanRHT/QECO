@@ -30,7 +30,10 @@ QECO is designed to balance and prioritize QoE factors based on individual mobil
 
 ![Performance_Chart](/assets/Performance_Chart__.png "Performance_Charts")
 
-### Benchmarks:
+<p align="left">
+<img height="165em" src="/assets/System_Model.png" 
+
+</p>
 
 
 ## Contents
