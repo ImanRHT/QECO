@@ -103,28 +103,28 @@ Make sure you have the following packages installed:
 
 We welcome contributions! Here’s how you can get involved:
 
-1. Fork the repository: Create your own copy of the project.
-2. Clone Your Fork 
+1. **Fork the repository**: Create your own copy of the project.
+2. **Clone Your Fork**
 
 ``` bash
   git clone https://github.com/<your-username>/<repo-name>.git  
   cd <repo-name>
 ```
 
-3. Create a new branch: Name your branch to reflect the changes you're making.
+3. **Create a new branch**: Name your branch to reflect the changes you're making.
    
 ``` bash
   git checkout -b feature/<add-future-direction-support>
 ```
 
-4. Commit your changes: Write clear and concise commit messages.
+4. **Commit your changes**: Write clear and concise commit messages.
 
 ``` bash
   git add * 
   git commit -a -m "<add-future-direction-support>"  
 ``` 
 
-5. Push your branch:
+5. **Push your branch:**
 
 ``` bash
   git push origin feature/<add-future-direction-support>
@@ -132,7 +132,7 @@ We welcome contributions! Here’s how you can get involved:
 
 6. Open a pull request: Navigate to the repository and submit your pull request. Provide a detailed description of your work.
 
-- For bug reports or feature requests, open a GitHub issue [here](https://github.com/ImanRht/QOCO/issues).
+For **bug reports** or **feature requests**, open a GitHub issue [here](https://github.com/ImanRht/QOCO/issues).
 
 
 ## Primary References
