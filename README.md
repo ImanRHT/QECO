@@ -88,16 +88,11 @@ Make sure you have the following packages installed:
 
 
 
-## Evaluation
+## Convergence
 
 ![Performance_Chart](/assets/Performance_Chart__.png "Performance_Charts")
 
 
-## About Authors
-
-- [Iman Rahmati](https://scholar.google.com/citations?user=yHWKp6MAAAAJ&hl=en&oi=sra): Research Assistant in the Computer Science and Engineering Department at SUT.
-- [Hamed Shah-Mansouri](https://scholar.google.com/citations?user=dcjIFccAAAAJ&hl=en&oi=ao): Assistant Professor in the Electrical Engineering Department at SUT.
-- [Ali Movaghar](https://scholar.google.com/citations?user=BXNelwwAAAAJ&hl=en): Professor in the Computer Science and Engineering Department at SUT.
 
 
 ## Future Directions
@@ -145,6 +140,13 @@ We welcome contributions! Here’s how you can get involved:
 6. Open a pull request: Navigate to the repository and submit your pull request. Provide a detailed description of your work.
 
 For **bug reports** or **feature requests**, open a GitHub issue [here](https://github.com/ImanRht/QOCO/issues).
+
+## About Authors
+
+- [Iman Rahmati](https://scholar.google.com/citations?user=yHWKp6MAAAAJ&hl=en&oi=sra): Research Assistant in the Computer Science and Engineering Department at SUT.
+- [Hamed Shah-Mansouri](https://scholar.google.com/citations?user=dcjIFccAAAAJ&hl=en&oi=ao): Assistant Professor in the Electrical Engineering Department at SUT.
+- [Ali Movaghar](https://scholar.google.com/citations?user=BXNelwwAAAAJ&hl=en): Professor in the Computer Science and Engineering Department at SUT.
+
 
 
 ## Primary References
