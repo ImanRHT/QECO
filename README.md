@@ -23,7 +23,7 @@ QECO is designed to balance and prioritize QoE factors based on individual mobil
 - **LSTM**: Incorporating LSTM networks allows the model to continuously estimate dynamic work- loads at edge servers. This is crucial for dealing with limited global information and adapting to the uncertain MEC environment with multiple MDs and ENs. By predicting the future workload of edge servers, MDs can effectively adjust their offloading strategies to achieve higher QoE.
 
 <div align="center">
-  <img src="/assets/D3QN_Model.png" alt="D3QN architecture" title="D3QN architecture" style="width:60%;"/>
+  <img src="/assets/D3QN.png" alt="D3QN architecture" title="D3QN architecture" style="width:60%;"/>
 </div>
 
 
