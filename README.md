@@ -44,7 +44,7 @@ QECO is designed to balance and prioritize QoE factors based on individual mobil
 - [MEC_Env.py](MEC_Env.py): Contains the code for the mobile edge computing environment.
 - [D3QN.py](DDQN.py): The code for QECO netwok model, implemented using [Tensorflow 1.x](https://www.tensorflow.org/install/pip).
 - [Config.py](Config.py): Configuration file for MEC entities and neural network setup.
-- 
+- [TrainedModel_50UE_5EN_RandomMode][TrainedModel_50UE_5EN_RandomMode]
 
 
 
