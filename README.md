@@ -99,6 +99,12 @@ Make sure you have the following packages installed:
 - [Hamed Shah-Mansouri](https://scholar.google.com/citations?user=dcjIFccAAAAJ&hl=en&oi=ao): Assistant Professor in the Electrical Engineering Department at SUT.
 - [Ali Movaghar](https://scholar.google.com/citations?user=BXNelwwAAAAJ&hl=en): Professor in the Computer Science and Engineering Department at SUT.
 
+
+## Future Directions
+
+- Extending the **task model** by considering interdependencies among tasks. This can be achieved by incorporating a **task call graph representation**.
+- **Accelerating the learning of optimal offloading policies** by taking the advantages of **Federated Learning** techniques in the training process. This will allow MDs to collectively contribute to improving the offloading model and enable continuous learning when new MDs join the network.
+
 ## Contributing 
 
 We welcome contributions! Here’s how you can get involved:
