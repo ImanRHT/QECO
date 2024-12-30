@@ -113,7 +113,7 @@ Make sure you have the following packages installed:
 We welcome contributions! Here’s how you can get involved:
 
 1. **Fork the repository**: Create your own copy of the project.
-2. **Clone Your Fork**
+2. **Clone Your Fork**:
 
 ``` bash
   git clone https://github.com/<your-username>/<repo-name>.git  
@@ -139,7 +139,7 @@ We welcome contributions! Here’s how you can get involved:
   git push origin feature/<add-future-direction-support>
 ```
 
-6. Open a pull request: Navigate to the repository and submit your pull request. Provide a detailed description of your work.
+6. **Open a pull request**: Navigate to the repository and submit your pull request. Provide a detailed description of your work.
 
 For **bug reports** or **feature requests**, open a GitHub issue [here](https://github.com/ImanRht/QOCO/issues).
 
