@@ -102,6 +102,7 @@ Make sure you have the following packages installed:
 - **Accelerating the learning of optimal offloading policies** by taking advantage of **Federated Learning** techniques in the training process. This will allow MDs to collectively contribute to improving the offloading model and enable continuous learning when new MDs join the network.
 - Addressing partially observable environment issues by designing a decentralized **Partially Observable Markov Decision Process (Dec-POMDP)**.
 - Extending the **Task Models** by considering interdependencies among tasks. This can be achieved by incorporating a **Task Call Graph Representation**.
+- Implementation of D3QN using PyTorch.
 
 
 
