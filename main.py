@@ -421,7 +421,7 @@ def train(ue_RL_list, NUM_EPISODE):
 
 
                 # Append metrics to tracking lists
-                if episode % 20 == 0:
+                if episode % 10 == 0:
                     avg_reward_list_2.append(sum(avg_reward_list[episode-10:episode]) / 10)
                     avg_delay_list_in_episode.append(Cal_Delay(ue_RL_list, episode))
                     avg_energy_list_in_episode.append(Cal_Energy(ue_RL_list, episode))
@@ -505,7 +505,7 @@ if __name__ == "__main__":
 
 
 
-    # LOAD MODEL
+    # LOAD Trained MODEL 
     '''
     for ue in range(Config.N_UE):
         ue_RL_list[ue].Initialize(ue_RL_list[ue].sess, ue)
@@ -517,7 +517,6 @@ if __name__ == "__main__":
     QoE    = open("QoE.txt"   , 'w')
     Drop   = open("Drop.txt"  , 'w')
                            
-
 
     # TRAIN THE SYSTEM
     train(ue_RL_list, Config.N_EPISODE)

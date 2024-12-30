@@ -313,7 +313,7 @@ class DuelingDoubleDeepQNetwork:
 
 
     def load_model(self,iot):
-        latest_ckpt = tf.train.latest_checkpoint("./models/400/"+str(iot)+"_X_model")
+        latest_ckpt = tf.train.latest_checkpoint("./TrainedModel_20UE_2EN_PerformanceMode/800/"+str(iot)+"_X_model")
 
         print(latest_ckpt, "_____+______________________________________________")
         if latest_ckpt is not None:
