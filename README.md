@@ -102,11 +102,13 @@ Make sure you have the following packages installed:
 
 ## Future Directions
 
-- Extending the **task model** by considering interdependencies among tasks. This can be achieved by incorporating a **task call graph representation**.
 
-- Addresing **Single-agent non-stationarity issues** by leveraging Multi-Agent DRL.
-- **Accelerating the learning of optimal offloading policies** by taking the advantages of **Federated Learning** techniques in the training process. This will allow MDs to collectively contribute to improving the offloading model and enable continuous learning when new MDs join the network.
-- Addresing **Partially observable environment issues**, by designing a decentralized Patialy observable markove desicion prosseces (DecPOMDP)
+- Addressing **single-agent non-stationarity issues** by leveraging **multi-agent DRL**.
+- **Accelerating the learning of optimal offloading policies** by taking advantage of **Federated Learning** techniques in the training process. This will allow MDs to collectively contribute to improving the offloading model and enable continuous learning when new MDs join the network.
+- Addressing partially observable environment issues by designing a decentralized **Partially Observable Markov Decision Process (Dec-POMDP)**.
+- Extending the **Task Models** by considering interdependencies among tasks. This can be achieved by incorporating a **Task Call Graph Representation**.
+
+
 
 
 ## Contributing 
