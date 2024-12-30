@@ -44,21 +44,6 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 - [DDQN_keras.py](DDQN_keras.py): D3QN implementation using [Keras](https://keras.io/).
 - [DDQN_torch.py](DDQN_torch.py): D3QN implementation using [PyTorch](https://pytorch.org/get-started/locally/).
 - [Config.py](Config.py): Configuration file for MEC entities and neural network setup.
-  
-## System Model
-
-<div align="center">
-  <img src="/assets/System_Model.png" alt="Qeueing architecture" title="Qeueing architecture" style="width:70%;"/>
-</div>
-
-## DQN-based Network Model
-
-<div align="center">
-  <img src="/assets/D3QN_Model.png" alt="D3QN architecture" title="D3QN architecture" style="width:70%;"/>
-</div>
-
-
-
 
 
 ## Quick Start
