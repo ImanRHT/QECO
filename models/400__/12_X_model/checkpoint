@@ -1,3 +1,0 @@
-model_checkpoint_path: "model.ckpt-400"
-all_model_checkpoint_paths: "../../200/12_X_model/model.ckpt-200"
-all_model_checkpoint_paths: "model.ckpt-400"
