@@ -59,14 +59,7 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 
 
 
-## Required Packages
 
-Make sure you have the following packages installed:
-
-- [Tensorflow](https://www.tensorflow.org/install/pip)
-- [PyTorch](https://pytorch.org/get-started/locally/)
-- numpy
-- matplotlib
 
 ## Quick Start
 
