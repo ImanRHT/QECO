@@ -70,17 +70,17 @@ Make sure you have the following packages installed:
 
 ## Quick Start
 
-1. Clone the repository:
+1. **Clone the repository**:
 
 ``` bash
    git clone https://github.com/ImanRHT/QECO.git
    cd QECO
 ```
 
-2. Configure the MEC environment in [Config.py](Config.py).
+2. **Configure the MEC environment** in [Config.py](Config.py).
 
 
-3. Run the training script:
+3. **Run the training script***:
 
 ``` bash
    python main.py
@@ -124,7 +124,7 @@ We welcome contributions! Here’s how you can get involved:
   git commit -a -m "<add-future-direction-support>"  
 ``` 
 
-5. **Push your branch:**
+5. **Push your branch**:
 
 ``` bash
   git push origin feature/<add-future-direction-support>
