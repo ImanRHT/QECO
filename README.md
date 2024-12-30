@@ -79,8 +79,8 @@ Make sure you have the following packages installed:
 
 2. **Configure the MEC environment** in [Config.py](Config.py).
 
-
-3. **Run the training script***:
+3. Make sure you have the required packages listed in the [requirements.txt](requirements.txt) file installed to ensure the project functions correctly.
+4. **Run the training script***:
 
 ``` bash
    python main.py
