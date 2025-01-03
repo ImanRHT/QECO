@@ -13,7 +13,7 @@ This repository contains the Python code for reproducing the decentralized QECO 
 
 
 
-## Citation:
+## Citation
 I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing](https://arxiv.org/pdf/2311.02525.pdf)".
 
 ```
