@@ -28,7 +28,7 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
 
 ## Overview
 
-
+.
 
 QECO is designed to balance and prioritize QoE factors based on individual mobile device requirements while considering the dynamic workloads at the edge nodes. The QECO algorithm captures the dynamics of the MEC environment by integrating the **Dueling Double Deep Q-Network (D3QN)** model with Long **Short-Term Memory (LSTM)** networks. This algorithm address the QoE maximization problem by efficiently utilizing resources from both MDs and ENs.
 
