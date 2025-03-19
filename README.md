@@ -22,7 +22,7 @@ I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation
   author={Rahmati, Iman and Shah-Mansouri, Hamed and Movaghar, Ali},
   journal={arXiv preprint arXiv:2311.02525},
   url={https://arxiv.org/abs/2311.02525},
-  year={2024}
+  year={2024} 
 }
 ```
 
