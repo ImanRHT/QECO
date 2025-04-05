@@ -4,7 +4,7 @@ python_version >= 3.6
 # Core libraries
 numpy >= 1.17.0
 matplotlib >= 3.0.0
-tensorflow >= 2.0.0
+tensorflow = 2.8.0
 # torch >= 1.0.0
 
 # Additional libraries
