@@ -18,15 +18,15 @@ In the realm of mobile edge computing (MEC), efficient computation task offloadi
 Mobile edge computing, computation task of- floading, quality of experience, deep reinforcement learning.
 
 ## Citation
-I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing](https://arxiv.org/pdf/2311.02525.pdf)".
+I. Rahmati, H. Shahmansouri, and A. Movaghar, "[QECO: A QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing](https://ieeexplore.ieee.org/document/10946841)".
 
 ```
 @article{rahmati2025qeco,
   title={QECO: A QoE-Oriented Computation Offloading Algorithm based on Deep Reinforcement Learning for Mobile Edge Computing},
   author={Rahmati, Iman and Shah-Mansouri, Hamed and Movaghar, Ali},
-  journal={arXiv preprint arXiv:2311.02525},
-  url={https://arxiv.org/abs/2311.02525},
-  year={2024}
+  journal={IEEE Transactions on Network Science and Engineering},
+  doi={10.1109/TNSE.2025.3556809},
+  year={2025}
 }
 ```
 
